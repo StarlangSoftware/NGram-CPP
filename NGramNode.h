@@ -20,7 +20,7 @@ private:
     int count = 0;
     double probability = 0.0;
     double probabilityOfUnseen = 0.0;
-    NGramNode<Symbol> unknown{};
+    NGramNode<Symbol>* unknown = nullptr;
     double childSum();
     void updateCountsOfCounts(int* countsOfCounts, int height);
     void setProbabilityWithPseudoCount(double pseudoCount, int height, double vocabularySize);
@@ -33,7 +33,9 @@ private:
     void replaceUnknownWords(unordered_set<Symbol> dictionary);
     int getCount(Symbol* s, int length, int index);
 public:
-    NGramNode(Symbol symbol);
+    ~NGramNode();
+    explicit NGramNode(Symbol symbol);
+    NGramNode();
     int getCount();
     unsigned long size();
     int maximumOccurrence(int height);
@@ -42,6 +44,10 @@ public:
 
 template<class Symbol> NGramNode<Symbol>::NGramNode(Symbol symbol) {
     this->symbol = symbol;
+    count = 0;
+}
+
+template<class Symbol> NGramNode<Symbol>::NGramNode() {
     count = 0;
 }
 
@@ -75,11 +81,13 @@ template<class Symbol> double NGramNode<Symbol>::childSum() {
         NGramNode child = it.second;
         sum += child.count;
     }
-    sum += unknown.count;
+    if (unknown != nullptr){
+        sum += unknown->count;
+    }
     return sum;
 }
 
-template<class Symbol> void NGramNode<Symbol>::updateCountsOfCounts(int *countsOfCounts, int height) {
+template<class Symbol> void NGramNode<Symbol>::updateCountsOfCounts(int* countsOfCounts, int height) {
     if (height == 0){
         countsOfCounts[count]++;
     } else {
@@ -97,7 +105,9 @@ template<class Symbol> void NGramNode<Symbol>::setProbabilityWithPseudoCount(dou
             NGramNode& child = it.second;
             child.probability = (child.count + pseudoCount) / sum;
         }
-        unknown.probability = (unknown.count + pseudoCount) / sum;
+        if (unknown != nullptr){
+            unknown->probability = (unknown->count + pseudoCount) / sum;
+        }
         probabilityOfUnseen = pseudoCount / sum;
     } else {
         for (auto const& it : children) {
@@ -159,8 +169,8 @@ template<class Symbol> double NGramNode<Symbol>::getUniGramProbability(Symbol w1
     if (children.find(w1) != children.end()){
         return children.find(w1).second.probability;
     } else {
-        if (unknown.probability != 0.0){
-            return unknown.probability;
+        if (unknown != nullptr){
+            return unknown->probability;
         }
         return probabilityOfUnseen;
     }
@@ -172,8 +182,8 @@ template<class Symbol> double NGramNode<Symbol>::getBiGramProbability(Symbol w1,
         child = children.find(w1).second;
         return child.getUniGramProbability(w2);
     } else {
-        if (unknown.probability != 0){
-            return unknown.getUniGramProbability(w2);
+        if (unknown != nullptr){
+            return unknown->getUniGramProbability(w2);
         }
         throw UnseenCase();
     }
@@ -185,8 +195,8 @@ template<class Symbol> double NGramNode<Symbol>::getTriGramProbability(Symbol w1
         child = children.find(w1).second;
         return child.getBiGramProbability(w2, w3);
     } else {
-        if (unknown.probability != 0){
-            return unknown.getBiGramProbability(w2, w3);
+        if (unknown != nullptr){
+            return unknown->getBiGramProbability(w2, w3);
         }
         throw UnseenCase();
     }
@@ -213,17 +223,17 @@ template<class Symbol> void NGramNode<Symbol>::replaceUnknownWords(unordered_set
             }
         }
         if (childList.size() > 0){
-            unknown = NGramNode<Symbol>{};
+            unknown = new NGramNode<Symbol>();
             int sum = 0;
             for (NGramNode<Symbol> child : childList){
                 if (child.children.size() != 0){
-                    unknown.children.putAll(child.children.begin(), child.children.end());
+                    unknown->children.putAll(child.children.begin(), child.children.end());
                 }
                 sum += child.count;
                 children.erase(child.symbol);
             }
-            unknown.count = sum;
-            unknown.replaceUnknownWords(dictionary);
+            unknown->count = sum;
+            unknown->replaceUnknownWords(dictionary);
         }
         for (auto const& it : children){
             NGramNode child = it.second;
@@ -262,6 +272,12 @@ template<class Symbol> Symbol NGramNode<Symbol>::generateNextString(vector<Symbo
         }
     } else {
         return children.find(s.get(index)).second.generateNextString(s, index + 1);
+    }
+}
+
+template<class Symbol> NGramNode<Symbol>::~NGramNode() {
+    if (unknown != nullptr){
+        delete unknown;
     }
 }
 

@@ -5,16 +5,19 @@
 #ifndef NGRAM_NGRAM_H
 #define NGRAM_NGRAM_H
 
+#include <vector>
 #include "NGramNode.h"
 
 template <class Symbol> class NGram{
 private:
-    NGramNode<Symbol> rootNode;
+    NGramNode<Symbol> rootNode = NGramNode<Symbol>();
     int N = 0;
     double lambda1 = 0.0, lambda2 = 0.0;
     bool interpolated = false;
     unordered_set<Symbol> vocabulary;
     double* probabilityOfUnseen;
+    int maximumOccurrence(int height);
+    void updateCountsOfCounts(int* countsOfCounts, int height);
 public:
     NGram(vector<vector<Symbol>> corpus, int N);
     NGram(int N);
@@ -25,6 +28,10 @@ public:
     double vocabularySize();
     void setLambda(double lambda1);
     void setLambda(double lambda1, double lambda2);
+    void setProbabilityWithPseudoCount(double pseudoCount, int height);
+    void replaceUnknownWords(unordered_set<Symbol> dictionary);
+    unordered_set<Symbol> constructDictionaryWithNonRareWords(int level, double probability);
+    vector<int> calculateCountsOfCounts(int height);
     ~NGram();
 };
 
@@ -90,6 +97,54 @@ template<class Symbol> void NGram<Symbol>::setLambda(double lambda1, double lamb
         this->lambda1 = lambda1;
         this->lambda2 = lambda2;
     }
+}
+
+template<class Symbol> void NGram<Symbol>::setProbabilityWithPseudoCount(double pseudoCount, int height) {
+    double sizeOfVocabulary;
+    if (pseudoCount != 0){
+        sizeOfVocabulary = vocabularySize() + 1;
+    } else {
+        sizeOfVocabulary = vocabularySize();
+    }
+    rootNode.setProbabilityWithPseudoCount(pseudoCount, height, sizeOfVocabulary);
+    probabilityOfUnseen[height - 1] = 1.0 / sizeOfVocabulary;
+}
+
+template<class Symbol> void NGram<Symbol>::replaceUnknownWords(unordered_set <Symbol> dictionary) {
+    rootNode.replaceUnknownWords(dictionary);
+}
+
+template<class Symbol> unordered_set<Symbol> NGram<Symbol>::constructDictionaryWithNonRareWords(int level, double probability) {
+    unordered_set<Symbol> result;
+    CounterHashMap<Symbol> wordCounter;
+    rootNode.countWords(wordCounter, level);
+    int sum = wordCounter.sumOfCounts();
+    for (auto const& it : wordCounter){
+        if (it.second / (sum + 0.0) > probability){
+            result.emplace(it.first);
+        }
+    }
+    return result;
+}
+
+template<class Symbol> vector<int> NGram<Symbol>::calculateCountsOfCounts(int height) {
+    int maxCount;
+    maxCount = maximumOccurrence(height);
+    int* countsOfCounts = new int[maxCount + 2];
+    updateCountsOfCounts(countsOfCounts, height);
+    vector<int> result(maxCount + 2);
+    for (int i = 0; i < maxCount + 2; i++){
+        result.push_back(countsOfCounts[i]);
+    }
+    return result;
+}
+
+template<class Symbol> int NGram<Symbol>::maximumOccurrence(int height) {
+    return rootNode.maximumOccurrence(height);
+}
+
+template<class Symbol> void NGram<Symbol>::updateCountsOfCounts(int* countsOfCounts, int height) {
+    rootNode.updateCountsOfCounts(countsOfCounts, height);
 }
 
 #endif //NGRAM_NGRAM_H
