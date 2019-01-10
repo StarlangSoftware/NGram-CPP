@@ -8,3 +8,12 @@ cmake-build-debug/CMakeFiles/NGram.dir/DependInfo.cmake
 cmake-build-debug/CMakeFiles/NGram.dir/flags.make
 cmake-build-debug/CMakeFiles/NGram.dir/link.txt
 cmake-build-debug/CMakeFiles/NGram.dir/progress.make
+cmake-build-debug/TestNGram
+cmake-build-debug/CMakeFiles/NGram.dir/cmake_clean_target.cmake
+cmake-build-debug/CMakeFiles/TestNGram.dir/build.make
+cmake-build-debug/CMakeFiles/TestNGram.dir/cmake_clean.cmake
+cmake-build-debug/CMakeFiles/TestNGram.dir/depend.make
+cmake-build-debug/CMakeFiles/TestNGram.dir/DependInfo.cmake
+cmake-build-debug/CMakeFiles/TestNGram.dir/flags.make
+cmake-build-debug/CMakeFiles/TestNGram.dir/link.txt
+cmake-build-debug/CMakeFiles/TestNGram.dir/progress.make
