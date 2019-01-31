@@ -147,7 +147,7 @@ template<class K> K CounterHashMap<K>::max(double threshold) {
  */
 template<class K> void CounterHashMap<K>::add(CounterHashMap<K> toBeAdded) {
     for (auto item = this->begin(); item != this->end(); item++){
-        putNTimes(this->first, toBeAdded.find(this->first)->second);
+        putNTimes(item->first, toBeAdded.find(item->first)->second);
     }
 }
 
