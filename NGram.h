@@ -222,7 +222,7 @@ template<class Symbol> vector<int> NGram<Symbol>::calculateCountsOfCounts(int he
     updateCountsOfCounts(countsOfCounts, height);
     vector<int> result(maxCount + 2);
     for (int i = 0; i < maxCount + 2; i++){
-        result.push_back(countsOfCounts[i]);
+        result[i] = countsOfCounts[i];
     }
     return result;
 }
