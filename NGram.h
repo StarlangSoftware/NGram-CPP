@@ -341,18 +341,18 @@ template<class Symbol> double NGram<Symbol>::getTriGramPerplexity(vector<vector<
 template<class Symbol> double NGram<Symbol>::getProbability(initializer_list<Symbol> symbols) {
     switch (N){
         case 1:
-            return getUniGramProbability(symbols[0]);
+            return getUniGramProbability(*(symbols.begin()));
         case 2:
             if (interpolated){
-                return lambda1 * getBiGramProbability(symbols[0], symbols[1]) + (1 - lambda1) * getUniGramProbability(symbols[1]);
+                return lambda1 * getBiGramProbability(*(symbols.begin()), *(symbols.begin() + 1)) + (1 - lambda1) * getUniGramProbability(*(symbols.begin() + 1));
             } else {
-                return getBiGramProbability(symbols[0], symbols[1]);
+                return getBiGramProbability(*(symbols.begin()), *(symbols.begin() + 1));
             }
         case 3:
             if (interpolated){
-                return lambda1 * getTriGramProbability(symbols[0], symbols[1], symbols[2]) + lambda2 * getBiGramProbability(symbols[1], symbols[2]) + (1 - lambda1 - lambda2) * getUniGramProbability(symbols[2]);
+                return lambda1 * getTriGramProbability(*(symbols.begin()), *(symbols.begin() + 1), *(symbols.begin() + 2)) + lambda2 * getBiGramProbability(*(symbols.begin() + 1), *(symbols.begin() + 2)) + (1 - lambda1 - lambda2) * getUniGramProbability(*(symbols.begin() + 2));
             } else {
-                return getTriGramProbability(symbols[0], symbols[1], symbols[2]);
+                return getTriGramProbability(*(symbols.begin()), *(symbols.begin() + 1), *(symbols.begin() + 2));
             }
     }
     return 0.0;

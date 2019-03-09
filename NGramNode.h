@@ -26,9 +26,6 @@ private:
     void setProbabilityWithPseudoCount(double pseudoCount, int height, double vocabularySize);
     void setAdjustedProbability(double* N, int height, double vocabularySize, double pZero);
     void addNGram(Symbol* s, int index, int height);
-    double getUniGramProbability(Symbol w1);
-    double getBiGramProbability(Symbol w1, Symbol w2);
-    double getTriGramProbability(Symbol w1, Symbol w2, Symbol w3);
     void countWords(CounterHashMap<Symbol> wordCounter, int height);
     void replaceUnknownWords(unordered_set<Symbol> dictionary);
     int getCount(Symbol* s, int length, int index);
@@ -40,6 +37,9 @@ public:
     unsigned long size();
     int maximumOccurrence(int height);
     Symbol generateNextString(vector<Symbol> s, int index);
+    double getUniGramProbability(Symbol w1);
+    double getBiGramProbability(Symbol w1, Symbol w2);
+    double getTriGramProbability(Symbol w1, Symbol w2, Symbol w3);
 };
 
 /**
@@ -225,7 +225,7 @@ template<class Symbol> void NGramNode<Symbol>::addNGram(Symbol *s, int index, in
  */
 template<class Symbol> double NGramNode<Symbol>::getUniGramProbability(Symbol w1) {
     if (children.find(w1) != children.end()){
-        return children.find(w1).second.probability;
+        return children.find(w1)->second.probability;
     } else {
         if (unknown != nullptr){
             return unknown->probability;
@@ -244,7 +244,7 @@ template<class Symbol> double NGramNode<Symbol>::getUniGramProbability(Symbol w1
 template<class Symbol> double NGramNode<Symbol>::getBiGramProbability(Symbol w1, Symbol w2) {
     NGramNode<Symbol> child;
     if (children.find(w1) != children.end()){
-        child = children.find(w1).second;
+        child = children.find(w1)->second;
         return child.getUniGramProbability(w2);
     } else {
         if (unknown != nullptr){
@@ -265,7 +265,7 @@ template<class Symbol> double NGramNode<Symbol>::getBiGramProbability(Symbol w1,
 template<class Symbol> double NGramNode<Symbol>::getTriGramProbability(Symbol w1, Symbol w2, Symbol w3) {
     NGramNode<Symbol> child;
     if (children.find(w1) != children.end()){
-        child = children.find(w1).second;
+        child = children.find(w1)->second;
         return child.getBiGramProbability(w2, w3);
     } else {
         if (unknown != nullptr){
