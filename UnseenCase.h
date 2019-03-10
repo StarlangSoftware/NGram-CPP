@@ -9,7 +9,9 @@ using namespace std;
 
 class UnseenCase : public exception {
 public:
-    const char* what() const noexcept override;
+    const char* what() const noexcept override {
+        return "Unseen Case";
+    }
 };
 
 
