@@ -10,6 +10,7 @@
 template <class Symbol> class SimpleSmoothing {
 protected:
     virtual void setProbabilities(NGram<Symbol> nGram, int level) = 0;
+public:
     void setProbabilities(NGram<Symbol> nGram);
 };
 
