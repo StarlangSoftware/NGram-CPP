@@ -106,7 +106,7 @@ template<class Symbol> void NGram<Symbol>::setN(int N) {
  */
 template<class Symbol> void NGram<Symbol>::addNGram(Symbol *symbols, int size) {
     for (int i = 0; i < size; i++){
-        vocabulary.add(symbols[i]);
+        vocabulary.emplace(symbols[i]);
     }
     rootNode.addNGram(symbols, 0, N);
 }

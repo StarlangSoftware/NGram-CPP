@@ -25,7 +25,6 @@ private:
     void updateCountsOfCounts(int* countsOfCounts, int height);
     void setProbabilityWithPseudoCount(double pseudoCount, int height, double vocabularySize);
     void setAdjustedProbability(double* N, int height, double vocabularySize, double pZero);
-    void addNGram(Symbol* s, int index, int height);
     void countWords(CounterHashMap<Symbol> wordCounter, int height);
     void replaceUnknownWords(unordered_set<Symbol> dictionary);
     int getCount(Symbol* s, int length, int index);
@@ -33,6 +32,7 @@ public:
     ~NGramNode();
     explicit NGramNode(Symbol symbol);
     NGramNode();
+    void addNGram(Symbol* s, int index, int height);
     int getCount();
     unsigned long size();
     int maximumOccurrence(int height);
@@ -209,9 +209,9 @@ template<class Symbol> void NGramNode<Symbol>::addNGram(Symbol *s, int index, in
     }
     Symbol symbol = s[index];
     if (children.size() != 0 && children.find(symbol) != children.end()){
-        child = children.find(symbol).second;
+        child = children.find(symbol)->second;
     } else {
-        child = new NGramNode<Symbol>(symbol);
+        child = NGramNode<Symbol>(symbol);
         children.emplace(symbol, child);
     }
     child.count++;
