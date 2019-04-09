@@ -69,6 +69,9 @@ template<class Symbol> NGram<Symbol>::NGram(vector<vector<Symbol>> corpus, int N
     int i;
     this->N = N;
     probabilityOfUnseen = new double[N];
+    for (int i = 0; i < N; i++){
+        probabilityOfUnseen[i] = 0.0;
+    }
     rootNode = NGramNode<Symbol>{};
     for (i = 0; i < corpus.size(); i++){
         Symbol* data = corpus.at(i).data();
@@ -84,6 +87,9 @@ template<class Symbol> NGram<Symbol>::NGram(vector<vector<Symbol>> corpus, int N
 template<class Symbol> NGram<Symbol>::NGram(int N) {
     this->N = N;
     probabilityOfUnseen = new double[N];
+    for (int i = 0; i < N; i++){
+        probabilityOfUnseen[i] = 0.0;
+    }
     rootNode = new NGramNode<Symbol>{};
 }
 
@@ -465,7 +471,7 @@ template<class Symbol> void NGram<Symbol>::serialize(ostream &outputFile) {
     for (auto & item : vocabulary){
         outputFile << item << "\n";
     }
-    rootNode->serialize(true, outputFile);
+    rootNode->serialize(true, outputFile, 0);
 }
 
 /**
@@ -480,8 +486,7 @@ template<class Symbol> void NGram<Symbol>::save(const string &fileName){
     outputFile.close();
 }
 
-template<class Symbol>
-NGram<Symbol>::NGram(ifstream &inputFile) {
+template<class Symbol>NGram<Symbol>::NGram(ifstream &inputFile) {
     Symbol s;
     int vocabularySize;
     inputFile >> N;

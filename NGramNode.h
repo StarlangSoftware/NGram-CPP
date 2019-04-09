@@ -11,8 +11,6 @@
 #include <unordered_set>
 #include "UnseenCase.h"
 
-using namespace std;
-
 template <class Symbol> class NGramNode{
 private:
     map<Symbol, NGramNode<Symbol>*> children;
@@ -31,7 +29,7 @@ public:
     ~NGramNode();
     explicit NGramNode(Symbol symbol);
     NGramNode();
-    explicit NGramNode(bool rootNode, ifstream &inputFile);
+    NGramNode(bool isRootNode, ifstream &inputFile);
     void addNGram(Symbol* s, int index, int height);
     int getCount();
     unsigned long size();
@@ -41,7 +39,7 @@ public:
     double getUniGramProbability(Symbol w1);
     double getBiGramProbability(Symbol w1, Symbol w2);
     double getTriGramProbability(Symbol w1, Symbol w2, Symbol w3);
-    void serialize(bool rootNode, ostream &outputFile);
+    void serialize(bool isRootNode, ostream &outputFile, int level);
 };
 
 /**
@@ -383,19 +381,25 @@ template<class Symbol> NGramNode<Symbol>::~NGramNode() {
     }
 }
 
-template<class Symbol> void NGramNode<Symbol>::serialize(bool rootNode, ostream &outputFile) {
-    if (!rootNode){
+template<class Symbol> void NGramNode<Symbol>::serialize(bool isRootNode, ostream &outputFile, int level) {
+    if (!isRootNode){
+        for (int i = 0; i < level; i++){
+            outputFile << "\t";
+        }
         outputFile << symbol << "\n";
+    }
+    for (int i = 0; i < level; i++){
+        outputFile << "\t";
     }
     outputFile << count << " " << probability << " " << probabilityOfUnseen << " " << size() << "\n";
     for (auto& iterator : children){
-        iterator.second->serialize(false, outputFile);
+        iterator.second->serialize(false, outputFile, level + 1);
     }
 }
 
-template<class Symbol> NGramNode<Symbol>::NGramNode(bool rootNode, ifstream &inputFile){
-    int tmp, size;
-    if (!rootNode){
+template<class Symbol> NGramNode<Symbol>::NGramNode(bool isRootNode, ifstream &inputFile){
+    int tmp, numberOfChildren;
+    if (!isRootNode){
         inputFile >> symbol;
     }
     inputFile >> count;
@@ -403,9 +407,9 @@ template<class Symbol> NGramNode<Symbol>::NGramNode(bool rootNode, ifstream &inp
     inputFile >> probability;
     inputFile >> probabilityOfUnseen;
     inputFile >> count;
-    size = count;
+    numberOfChildren = count;
     unknown = nullptr;
-    for (int i = 0; i < size; i++){
+    for (int i = 0; i < numberOfChildren; i++){
         auto* childNode = new NGramNode(false, inputFile);
         children.emplace(childNode->symbol, childNode);
     }
