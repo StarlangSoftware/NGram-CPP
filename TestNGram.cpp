@@ -13,7 +13,7 @@ int main(){
     string sentence5[] = {"fatma", "at", "topu", "fatmaya"};
     string sentence6[] = {"ali", "ve", "fatma", "topu", "at", "aliye"};
     string sentence7[] = {"fatma", "ve", "ali", "at", "topu", "fatmaya"};
-    NGram<string> nGram = NGram<string>(3);
+    NGram<string> nGram = NGram<string>(2);
     nGram.addNGramSentence(sentence1, 3);
     nGram.addNGramSentence(sentence2, 4);
     nGram.addNGramSentence(sentence3, 4);

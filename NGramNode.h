@@ -29,7 +29,7 @@ public:
     ~NGramNode();
     explicit NGramNode(Symbol symbol);
     NGramNode();
-    NGramNode(bool isRootNode, ifstream &inputFile);
+    NGramNode(bool isRootNode, istream &inputFile);
     void addNGram(Symbol* s, int index, int height);
     int getCount();
     unsigned long size();
@@ -397,22 +397,19 @@ template<class Symbol> void NGramNode<Symbol>::serialize(bool isRootNode, ostrea
     }
 }
 
-template<class Symbol> NGramNode<Symbol>::NGramNode(bool isRootNode, ifstream &inputFile){
-    int tmp, numberOfChildren;
+template<class Symbol> NGramNode<Symbol>::NGramNode(bool isRootNode, istream &inputFile){
+    int numberOfChildren;
     if (!isRootNode){
         inputFile >> symbol;
     }
     inputFile >> count;
-    tmp = count;
     inputFile >> probability;
     inputFile >> probabilityOfUnseen;
-    inputFile >> count;
-    numberOfChildren = count;
+    inputFile >> numberOfChildren;
     unknown = nullptr;
     for (int i = 0; i < numberOfChildren; i++){
         auto* childNode = new NGramNode(false, inputFile);
         children.emplace(childNode->symbol, childNode);
     }
-    count = tmp;
 }
 #endif //NGRAM_NGRAMNODE_H
