@@ -225,7 +225,7 @@ template<class Symbol> void NGramNode<Symbol>::addNGram(Symbol *s, int index, in
  */
 template<class Symbol> double NGramNode<Symbol>::getUniGramProbability(Symbol w1) {
     if (children.find(w1) != children.end()){
-        return children.find(w1)->second.probability;
+        return children.find(w1)->second->probability;
     } else {
         if (unknown != nullptr){
             return unknown->probability;
