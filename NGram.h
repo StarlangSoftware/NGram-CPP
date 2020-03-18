@@ -354,12 +354,22 @@ template<class Symbol> double NGram<Symbol>::getProbability(initializer_list<Sym
         case 1:
             return getUniGramProbability(*(symbols.begin()));
         case 2:
+            if (symbols.size() == 1){
+                return getUniGramProbability(*(symbols.begin()));
+            }
             if (interpolated){
                 return lambda1 * getBiGramProbability(*(symbols.begin()), *(symbols.begin() + 1)) + (1 - lambda1) * getUniGramProbability(*(symbols.begin() + 1));
             } else {
                 return getBiGramProbability(*(symbols.begin()), *(symbols.begin() + 1));
             }
         case 3:
+            if (symbols.size() == 1){
+                return getUniGramProbability(*(symbols.begin()));
+            } else {
+                if (symbols.size() == 2){
+                    return getBiGramProbability(*(symbols.begin()), *(symbols.begin() + 1));
+                }
+            }
             if (interpolated){
                 return lambda1 * getTriGramProbability(*(symbols.begin()), *(symbols.begin() + 1), *(symbols.begin() + 2)) + lambda2 * getBiGramProbability(*(symbols.begin() + 1), *(symbols.begin() + 2)) + (1 - lambda1 - lambda2) * getUniGramProbability(*(symbols.begin() + 2));
             } else {
