@@ -34,6 +34,7 @@ public:
     int getN();
     void addNGram(Symbol* symbols, int size);
     void addNGramSentence(Symbol* symbols, int size);
+    void addNGramSentence(Symbol* symbols, int size, int sentenceCount);
     double vocabularySize();
     void setLambda(double lambda1);
     void setLambda(double lambda1, double lambda2);
@@ -129,11 +130,22 @@ template<class Symbol> void NGram<Symbol>::addNGram(Symbol *symbols, int size) {
  * @param size size of symbols.
  */
 template<class Symbol> void NGram<Symbol>::addNGramSentence(Symbol *symbols, int size) {
+    addNGramSentence(symbols, size, 1);
+}
+
+/**
+ * Adds given sentence count times to {@link unordered_set} the vocabulary and create and add ngrams of the sentence to {@link NGramNode} the rootNode
+ *
+ * @param symbols {@link Symbol*} sentence whose ngrams are added.
+ * @param size size of symbols.
+ * @param count Number of times this sentence is added.
+ */
+template<class Symbol> void NGram<Symbol>::addNGramSentence(Symbol *symbols, int size, int sentenceCount) {
     for (int i = 0; i < size; i++){
         vocabulary.emplace(symbols[i]);
     }
     for (int j = 0; j < size - N + 1; j++){
-        rootNode->addNGram(symbols, j, N);
+        rootNode->addNGram(symbols, j, N, sentenceCount);
     }
 }
 

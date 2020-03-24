@@ -31,6 +31,7 @@ public:
     NGramNode();
     NGramNode(bool isRootNode, istream &inputFile);
     void addNGram(Symbol* s, int index, int height);
+    void addNGram(Symbol* s, int index, int height, int sentenceCount);
     int getCount();
     unsigned long size();
     void setProbabilityWithPseudoCount(double pseudoCount, int height, double vocabularySize);
@@ -203,6 +204,17 @@ template<class Symbol> void NGramNode<Symbol>::setAdjustedProbability(double *N,
  *               N-Gram is treated as Bigram, etc.
  */
 template<class Symbol> void NGramNode<Symbol>::addNGram(Symbol *s, int index, int height) {
+    addNGram(s, index, height, 1);
+}
+
+/**
+ * Adds NGram given as array of symbols to the node as a child.
+ * @param s array of symbols
+ * @param index  start index of NGram
+ * @param height height for NGram. if height = 1, If level = 1, N-Gram is treated as UniGram, if level = 2,
+ *               N-Gram is treated as Bigram, etc.
+ */
+template<class Symbol> void NGramNode<Symbol>::addNGram(Symbol *s, int index, int height, int sentenceCount) {
     NGramNode<Symbol>* child;
     if (height == 0){
         return;
@@ -214,7 +226,7 @@ template<class Symbol> void NGramNode<Symbol>::addNGram(Symbol *s, int index, in
         child = new NGramNode<Symbol>(symbol);
         children.emplace(symbol, child);
     }
-    child->count++;
+    child->count += sentenceCount;
     child->addNGram(s, index + 1, height - 1);
 }
 
