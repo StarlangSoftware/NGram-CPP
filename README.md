@@ -2,7 +2,7 @@
 
 For Developers
 ============
-You can also see [Java](https://github.com/olcaytaner/NGram), [Python](https://github.com/olcaytaner/NGram-Py), or [C#](https://github.com/olcaytaner/NGram-CS) repository.
+You can also see [Java](https://github.com/starlangsoftware/NGram), [Python](https://github.com/starlangsoftware/NGram-Py), or [C#](https://github.com/starlangsoftware/NGram-CS) repository.
 
 Detailed Description
 ============
