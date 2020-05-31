@@ -1,98 +1,48 @@
-# NGram-CPP
-
 For Developers
 ============
 You can also see [Java](https://github.com/starlangsoftware/NGram), [Python](https://github.com/starlangsoftware/NGram-Py), or [C#](https://github.com/starlangsoftware/NGram-CS) repository.
 
-Detailed Description
-============
-+ [Training NGram](#training-ngram)
-+ [Using NGram](#using-ngram)
-+ [Saving NGram](#saving-ngram)
-+ [Loading NGram](#loading-ngram)
+## Requirements
 
-## Training NGram
-     
-Boş bir NGram modeli oluşturmak için
+* [C++ Compiler](#cpp)
+* [Git](#git)
 
-	NGram(int N)
 
-Örneğin,
+### CPP
+To check if you have compatible C++ Compiler installed,
+* Open CLion IDE 
+* Preferences >Build,Execution,Deployment > Toolchain  
 
-	a = NGram(2);
+### Git
 
-boş bir bigram modeli oluşturulmaktadır.
+Install the [latest version of Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git).
 
-NGram'a bir cümle eklemek için
+## Download Code
 
-	void addNGramSentence(Symbol[] symbols)
+In order to work on code, create a fork from GitHub page. 
+Use Git for cloning the code to your local or below line for Ubuntu:
 
-Örneğin,
+	git clone <your-fork-git-link>
 
-	String[] text1 = {"ali", "topu", "at", "mehmet", "ayşe", "gitti"};
-	String[] text2 = {"ali", "top", "at", "ayşe", "gitti"};
-	nGram = new NGram<String>(2);
-	nGram.addNGramSentence(text1);
-	nGram.addNGramSentence(text2);
+A directory called DataStructure will be created. Or you can use below link for exploring the code:
 
-satırları ile boş bir bigram oluşturulup, text1 ve text2 cümleleri bigram modeline 
-eklenir.
+	git clone https://github.com/starlangsoftware/NGram-CPP.git
 
-NoSmoothing sınıfı smoothing için kullanılan en basit tekniktir. Eğitim gerektirmez, sadece
-sayaçlar kullanılarak olasılıklar hesaplanır. Örneğin verilen bir NGram'ın NoSmoothing ile 
-olasılıklarının hesaplanması için
+## Open project with CLion IDE
 
-	a.calculateNGramProbabilities(new NoSmoothing());
+To import projects from Git with version control:
 
-LaplaceSmoothing sınıfı smoothing için kullanılan basit bir yumuşatma tekniğidir. Eğitim 
-gerektirmez, her sayaca 1 eklenerek olasılıklar hesaplanır. Örneğin verilen bir NGram'ın 
-LaplaceSmoothing ile olasılıklarının hesaplanması için
+* Open CLion IDE , select Get From Version Control.
 
-	a.calculateNGramProbabilities(new LaplaceSmoothing());
+* In the Import window, click URL tab and paste github URL.
 
-GoodTuringSmoothing sınıfı smoothing için kullanılan eğitim gerektirmeyen karmaşık bir 
-yumuşatma tekniğidir. Verilen bir NGram'ın GoodTuringSmoothing ile olasılıklarının 
-hesaplanması için
+* Click open as Project.
 
-	a.calculateNGramProbabilities(new GoodTuringSmoothing());
+Result: The imported project is listed in the Project Explorer view and files are loaded.
 
-AdditiveSmoothing sınıfı smoothing için kullanılan eğitim gerektiren bir yumuşatma 
-tekniğidir.
 
-	a.calculateNGramProbabilities(new AdditiveSmoothing());
+## Compile
 
-## Using NGram
+**From IDE**
 
-Bir NGram'ın olasılığını bulmak için
-
-	double getProbability(Symbol ... symbols)
-
-Örneğin, bigram olasılığını bulmak için
-
-	a.getProbability("ali", "topu")
-
-trigram olasılığını bulmak için
-
-	a.getProbability("ali", "topu", "at")
-
-## Saving NGram
-    
-NGram modelini kaydetmek için
-
-	void saveAsText(String fileName)
-
-Örneğin, a modelini "model.txt" dosyasına kaydetmek için
-
-	a.saveAsText("model.txt");              
-
-## Loading NGram            
-
-Var olan bir NGram modelini yüklemek için
-
-	NGram(String fileName)
-
-Örneğin,
-
-	a = NGram("model.txt");
-
-model.txt dosyasında bulunan bir NGram modelini yükler.
+After being done with the downloading and opening project, select **Build Project** option from **Build** menu. After compilation process, user can run DataStructure-CPP.
