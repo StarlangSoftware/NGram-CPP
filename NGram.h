@@ -49,6 +49,7 @@ public:
     int getCount(Symbol* symbols, int length);
     void setAdjustedProbability(double* countsOfCounts, int height, double pZero);
     ~NGram();
+    void prune(double threshold);
     void serialize(ostream& outputFile);
     void save(const string &fileName);
 };
@@ -513,6 +514,12 @@ template<class Symbol>NGram<Symbol>::NGram(ifstream &inputFile) {
         vocabulary.emplace(s);
     }
     rootNode = new NGramNode<Symbol>(true, inputFile);
+}
+
+template<class Symbol> void NGram<Symbol>::prune(double threshold) {
+    if (threshold > 0.0 && threshold <= 1.0){
+        rootNode->prune(threshold, N - 1);
+    }
 }
 
 #endif //NGRAM_NGRAM_H

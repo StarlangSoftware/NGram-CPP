@@ -39,6 +39,7 @@ public:
     double getUniGramProbability(Symbol w1);
     double getBiGramProbability(Symbol w1, Symbol w2);
     double getTriGramProbability(Symbol w1, Symbol w2, Symbol w3);
+    void prune(double threshold, int N);
     void serialize(bool isRootNode, ostream &outputFile, int level);
 };
 
@@ -412,4 +413,25 @@ template<class Symbol> NGramNode<Symbol>::NGramNode(bool isRootNode, istream &in
         children.emplace(childNode->symbol, childNode);
     }
 }
+
+template<class Symbol> void NGramNode<Symbol>::prune(double threshold, int N) {
+    if (N == 0){
+        vector<Symbol> toBeDeleted;
+        for (auto const& it : children){
+            NGramNode<Symbol>* node = it.second;
+            if (node->count / (count + 0.0) < threshold){
+                toBeDeleted.emplace_back(it.first);
+            }
+        }
+        for (Symbol symbol1 : toBeDeleted){
+            children.erase(symbol1);
+        }
+    } else {
+        for (auto const& it : children){
+            NGramNode<Symbol>* node = it.second;
+            node->prune(threshold, N - 1);
+        }
+    }
+}
+
 #endif //NGRAM_NGRAMNODE_H
