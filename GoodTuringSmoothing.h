@@ -13,7 +13,8 @@
 template <class Symbol> class GoodTuringSmoothing : public SimpleSmoothing<Symbol>{
 private:
     double* linearRegressionOnCountsOfCounts(vector<int> countsOfCounts);
-protected:
+
+public:
     void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
 

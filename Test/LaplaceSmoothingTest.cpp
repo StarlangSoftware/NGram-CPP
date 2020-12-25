@@ -27,6 +27,7 @@ TEST_CASE("LaplaceSmoothingTest-testPerplexitySimple") {
 
 TEST_CASE("LaplaceSmoothingTest-testPerplexityComplex") {
     vector<vector<string>> trainCorpus = readCorpus("../Test/train.txt");
+    vector<vector<string>> testCorpus = readCorpus("../Test/test.txt");
     NGram<string> complexUniGram = NGram<string>(trainCorpus, 1);
     NGram<string> complexBiGram = NGram<string>(trainCorpus, 2);
     NGram<string> complexTriGram = NGram<string>(trainCorpus, 3);
@@ -34,9 +35,9 @@ TEST_CASE("LaplaceSmoothingTest-testPerplexityComplex") {
     laplaceSmoothing.setProbabilities(complexUniGram);
     laplaceSmoothing.setProbabilities(complexBiGram);
     laplaceSmoothing.setProbabilities(complexTriGram);
-    REQUIRE_THAT(3298.661985, Catch::Matchers::WithinAbs(complexUniGram.getPerplexity(trainCorpus), 0.0001));
-    REQUIRE_THAT(24763.660225, Catch::Matchers::WithinAbs(complexBiGram.getPerplexity(trainCorpus), 0.0001));
-    REQUIRE_THAT(49579.187475, Catch::Matchers::WithinAbs(complexTriGram.getPerplexity(trainCorpus), 0.0001));
+    REQUIRE_THAT(4085.763010, Catch::Matchers::WithinAbs(complexUniGram.getPerplexity(testCorpus), 0.0001));
+    REQUIRE_THAT(24763.660225, Catch::Matchers::WithinAbs(complexBiGram.getPerplexity(testCorpus), 0.0001));
+    REQUIRE_THAT(49579.187475, Catch::Matchers::WithinAbs(complexTriGram.getPerplexity(testCorpus), 0.0001));
 }
 
 TEST_CASE("LaplaceSmoothingTest-testCalculateNGramProbabilitiesSimple") {

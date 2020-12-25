@@ -13,7 +13,7 @@ protected:
     double newLowerBound(double current, double currentLowerBound, double currentUpperBound, int numberOfParts);
     double newUpperBound(double current, double currentLowerBound, double currentUpperBound, int numberOfParts);
 public:
-    void train(vector<vector<Symbol>> corpus, NGram<Symbol> nGram);
+    void train(vector<vector<Symbol>> corpus, NGram<Symbol>& nGram);
 };
 
 /**
@@ -55,9 +55,9 @@ template<class Symbol> double TrainedSmoothing<Symbol>::newUpperBound(double cur
  * @param corpus Train corpus used to optimize parameters of the smoothing method.
  * @param nGram N-Gram for which the probabilities will be set.
  */
-template<class Symbol> void TrainedSmoothing<Symbol>::train(vector<vector<Symbol>> corpus, NGram<Symbol> nGram) {
+template<class Symbol> void TrainedSmoothing<Symbol>::train(vector<vector<Symbol>> corpus, NGram<Symbol>& nGram) {
     learnParameters(corpus, nGram.getN());
-    setProbabilities(nGram);
+    this->setProbabilities(nGram);
 }
 
 #endif //NGRAM_TRAINEDSMOOTHING_H

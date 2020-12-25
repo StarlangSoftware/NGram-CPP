@@ -16,7 +16,7 @@ private:
      * validation.
      */
     double delta;
-    double learnBestDelta(vector<NGram<Symbol>> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation, double lowerBound);
+    double learnBestDelta(vector<NGram<Symbol>*> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation, double lowerBound);
     void learnParameters(vector<vector<Symbol>> corpus, int N);
 
 protected:
@@ -35,7 +35,7 @@ public:
  * @return Best delta optimized with k-fold crossvalidation.
  */
 template<class Symbol>
-double AdditiveSmoothing<Symbol>::learnBestDelta(vector<NGram<Symbol>> nGrams,
+double AdditiveSmoothing<Symbol>::learnBestDelta(vector<NGram<Symbol>*> nGrams,
                                                  KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation,
                                                  double lowerBound) {
     double bestPerplexity, bestPrevious = -1, upperBound = 1, perplexity, bestDelta = (lowerBound + upperBound) / 2;
@@ -45,8 +45,8 @@ double AdditiveSmoothing<Symbol>::learnBestDelta(vector<NGram<Symbol>> nGrams,
         for (double value = lowerBound; value <= upperBound; value += (upperBound - lowerBound) / numberOfParts){
             perplexity = 0;
             for (int i = 0; i < 10; i++){
-                nGrams.at(i).setProbabilityWithPseudoCount(value, nGrams.at(i).getN());
-                perplexity += nGrams.at(i).getPerplexity(kFoldCrossValidation.getTestFold(i));
+                nGrams.at(i)->setProbabilityWithPseudoCount(value, nGrams.at(i)->getN());
+                perplexity += nGrams.at(i)->getPerplexity(kFoldCrossValidation.getTestFold(i));
             }
             if (perplexity < bestPerplexity){
                 bestPerplexity = perplexity;
@@ -73,10 +73,11 @@ double AdditiveSmoothing<Symbol>::learnBestDelta(vector<NGram<Symbol>> nGrams,
  */
 template<class Symbol> void AdditiveSmoothing<Symbol>::learnParameters(vector<vector<Symbol>> corpus, int N) {
     int K = 10;
-    vector<NGram<Symbol>> nGrams = vector<NGram<Symbol>>(10);
+    vector<NGram<Symbol>*> nGrams;
     KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation = KFoldCrossValidation(corpus, K, 0);
     for (int i = 0; i < K; i++){
-        nGrams[i] = NGram<Symbol>(kFoldCrossValidation.getTrainFold(i), N);
+        NGram<Symbol>* nGram = new NGram<Symbol>(kFoldCrossValidation.getTrainFold(i), N);
+        nGrams.push_back(nGram);
     }
     delta = learnBestDelta(nGrams, kFoldCrossValidation, 0.1);
 }

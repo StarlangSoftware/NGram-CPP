@@ -8,26 +8,17 @@
 #include <KFoldCrossValidation.h>
 #include <cfloat>
 #include "TrainedSmoothing.h"
+#include "GoodTuringSmoothing.h"
 
 template <class Symbol> class InterpolatedSmoothing : public TrainedSmoothing<Symbol>{
 private:
-    void (*setProbabilitiesForSimpleSmoothing)(NGram<Symbol>);
     double lambda1, lambda2;
-    double learnBestLambda(vector<NGram<Symbol>> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation, double lowerBound);
-    vector<double> learnBestLambdas(vector<NGram<Symbol>> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation, double lowerBound1, double lowerBound2);
-public:
-    explicit InterpolatedSmoothing(void (*setProbabilities)(NGram<Symbol>));
+    double learnBestLambda(vector<NGram<Symbol>*> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation, double lowerBound);
+    vector<double> learnBestLambdas(vector<NGram<Symbol>*> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation, double lowerBound1, double lowerBound2);
 protected:
     void learnParameters(vector<vector<Symbol>> corpus, int N);
-    void setProbabilities(NGram<Symbol>& nGram, int level);
+    void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
-
-/**
- * No argument constructor of {@link InterpolatedSmoothing}
- */
-template<class Symbol> InterpolatedSmoothing<Symbol>::InterpolatedSmoothing(void (*setProbabilitiesForSimpleSmoothing)(NGram<Symbol>)) {
-    this->setProbabilitiesForSimpleSmoothing = setProbabilitiesForSimpleSmoothing;
-}
 
 /**
  * The algorithm tries to optimize the best lambda for a given corpus. The algorithm uses perplexity on the validation
@@ -38,11 +29,11 @@ template<class Symbol> InterpolatedSmoothing<Symbol>::InterpolatedSmoothing(void
  * @param lowerBound Initial lower bound for optimizing the best lambda.
  * @return  Best lambda optimized with k-fold crossvalidation.
  */
-template<class Symbol> double InterpolatedSmoothing<Symbol>::learnBestLambda(vector<NGram<Symbol>> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation,
+template<class Symbol> double InterpolatedSmoothing<Symbol>::learnBestLambda(vector<NGram<Symbol>*> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation,
                                                double lowerBound) {
     double bestPerplexity, bestPrevious = -1, upperBound = 0.999, perplexity, bestLambda = (lowerBound + upperBound) / 2;
     int numberOfParts = 5;
-    vector<vector<Symbol>> testFolds = vector<vector<Symbol>>(10);
+    vector<vector<Symbol>> testFolds[10];
     for (int i = 0; i < 10; i++){
         testFolds[i] = kFoldCrossValidation.getTestFold(i);
     }
@@ -51,8 +42,8 @@ template<class Symbol> double InterpolatedSmoothing<Symbol>::learnBestLambda(vec
         for (double value = lowerBound; value <= upperBound; value += (upperBound - lowerBound) / numberOfParts){
             perplexity = 0;
             for (int i = 0; i < 10; i++){
-                nGrams.at(i).setLambda(value);
-                perplexity += nGrams.at(i).getPerplexity(testFolds[i]);
+                nGrams.at(i)->setLambda(value);
+                perplexity += nGrams[i]->getPerplexity(testFolds[i]);
             }
             if (perplexity < bestPerplexity){
                 bestPerplexity = perplexity;
@@ -82,11 +73,11 @@ template<class Symbol> double InterpolatedSmoothing<Symbol>::learnBestLambda(vec
  * @return
  */
 template<class Symbol>
-vector<double> InterpolatedSmoothing<Symbol>::learnBestLambdas(vector<NGram<Symbol>> nGrams,
+vector<double> InterpolatedSmoothing<Symbol>::learnBestLambdas(vector<NGram<Symbol>*> nGrams,
                                                                KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation,
                                                                double lowerBound1, double lowerBound2) {
     double bestPerplexity, upperBound1 = 0.999, upperBound2 = 0.999, bestPrevious = -1, perplexity, bestLambda1 = (lowerBound1 + upperBound1) / 2, bestLambda2 = (lowerBound1 + upperBound1) / 2;
-    vector<vector<Symbol>> testFolds = new vector<vector<Symbol>>(10);
+    vector<vector<Symbol>> testFolds[10];
     int numberOfParts = 5;
     for (int i = 0; i < 10; i++){
         testFolds[i] = kFoldCrossValidation.getTestFold(i);
@@ -97,8 +88,8 @@ vector<double> InterpolatedSmoothing<Symbol>::learnBestLambdas(vector<NGram<Symb
             for (double value2 = lowerBound2; value2 <= upperBound2 && value1 + value2 < 1; value2 += (upperBound2 - lowerBound2) / numberOfParts){
                 perplexity = 0;
                 for (int i = 0; i < 10; i++){
-                    nGrams.at(i).setLambda(value1, value2);
-                    perplexity += nGrams.at(i).getPerplexity(testFolds[i]);
+                    nGrams.at(i)->setLambda(value1, value2);
+                    perplexity += nGrams.at(i)->getPerplexity(testFolds[i]);
                 }
                 if (perplexity < bestPerplexity){
                     bestPerplexity = perplexity;
@@ -135,20 +126,22 @@ template<class Symbol> void InterpolatedSmoothing<Symbol>::learnParameters(vecto
         return;
     }
     int K = 10;
-    vector<NGram<Symbol>> nGrams = vector<NGram<Symbol>>(10);
+    vector<NGram<Symbol>*> nGrams;
     KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation = KFoldCrossValidation(corpus, K, 0);
     for (int i = 0; i < K; i++){
-        nGrams.emplace_back(NGram<Symbol>(kFoldCrossValidation.getTrainFold(i), N));
+        NGram<Symbol>* nGram = new NGram<Symbol>(kFoldCrossValidation.getTrainFold(i), N);
+        nGrams.push_back(nGram);
+        GoodTuringSmoothing<string> goodTuringSmoothing;
         for (int j = 2; j<= N; j++){
-            nGrams[i].calculateNGramProbabilities(setProbabilitiesForSimpleSmoothing, j);
+            goodTuringSmoothing.setProbabilitiesWithLevel(*(nGrams[i]), j);
         }
-        nGrams[i].calculateNGramProbabilities(setProbabilitiesForSimpleSmoothing, 1);
+        goodTuringSmoothing.setProbabilitiesWithLevel(*(nGrams[i]), 1);
     }
     if (N == 2){
         lambda1 = learnBestLambda(nGrams, kFoldCrossValidation, 0.1);
     } else {
         if (N == 3){
-            double[] bestLambdas = learnBestLambdas(nGrams, kFoldCrossValidation, 0.1, 0.1);
+            vector<double> bestLambdas = learnBestLambdas(nGrams, kFoldCrossValidation, 0.1, 0.1);
             lambda1 = bestLambdas[0];
             lambda2 = bestLambdas[1];
         }
@@ -163,11 +156,12 @@ template<class Symbol> void InterpolatedSmoothing<Symbol>::learnParameters(vecto
  *              N-Gram is treated as Bigram, etc.
  *
  */
-template<class Symbol> void InterpolatedSmoothing<Symbol>::setProbabilities(NGram<Symbol>& nGram, int level) {
+template<class Symbol> void InterpolatedSmoothing<Symbol>::setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level) {
+    GoodTuringSmoothing<string> goodTuringSmoothing;
     for (int j = 2; j<= nGram.getN(); j++){
-        nGram.calculateNGramProbabilities(setProbabilitiesForSimpleSmoothing, j);
+        goodTuringSmoothing.setProbabilitiesWithLevel(nGram, j);
     }
-    nGram.calculateNGramProbabilities(setProbabilitiesForSimpleSmoothing, 1);
+    goodTuringSmoothing.setProbabilitiesWithLevel(nGram, 1);
     switch (nGram.getN()){
         case 2:
             nGram.setLambda(lambda1);

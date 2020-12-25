@@ -27,6 +27,7 @@ TEST_CASE("GoodTuringSmoothingTest-testPerplexitySimple") {
 
 TEST_CASE("GoodTuringSmoothingTest-testPerplexityComplex") {
     vector<vector<string>> trainCorpus = readCorpus("../Test/train.txt");
+    vector<vector<string>> testCorpus = readCorpus("../Test/test.txt");
     NGram<string> complexUniGram = NGram<string>(trainCorpus, 1);
     NGram<string> complexBiGram = NGram<string>(trainCorpus, 2);
     NGram<string> complexTriGram = NGram<string>(trainCorpus, 3);
@@ -34,9 +35,9 @@ TEST_CASE("GoodTuringSmoothingTest-testPerplexityComplex") {
     goodTuringSmoothing.setProbabilities(complexUniGram);
     goodTuringSmoothing.setProbabilities(complexBiGram);
     goodTuringSmoothing.setProbabilities(complexTriGram);
-    REQUIRE_THAT(3750.113476, Catch::Matchers::WithinAbs(complexUniGram.getPerplexity(trainCorpus), 0.0001));
-    REQUIRE_THAT(8331.518540, Catch::Matchers::WithinAbs(complexBiGram.getPerplexity(trainCorpus), 0.0001));
-    REQUIRE_THAT(39184.430078, Catch::Matchers::WithinAbs(complexTriGram.getPerplexity(trainCorpus), 0.0001));
+    REQUIRE_THAT(1290.97916, Catch::Matchers::WithinAbs(complexUniGram.getPerplexity(testCorpus), 0.0001));
+    REQUIRE_THAT(8331.518540, Catch::Matchers::WithinAbs(complexBiGram.getPerplexity(testCorpus), 0.0001));
+    REQUIRE_THAT(39184.430078, Catch::Matchers::WithinAbs(complexTriGram.getPerplexity(testCorpus), 0.0001));
 }
 
 TEST_CASE("GoodTuringSmoothingTest-testCalculateNGramProbabilitiesSimple") {
