@@ -11,9 +11,9 @@ template <class Symbol> class NoSmoothingWithDictionary : public NoSmoothing<Sym
 private:
     unordered_set<Symbol> dictionary;
 public:
-    NoSmoothingWithDictionary(unordered_set<Symbol> dictionary);
+    explicit NoSmoothingWithDictionary(unordered_set<Symbol> dictionary);
 protected:
-    void setProbabilities(NGram<Symbol> nGram, int level);
+    void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
 
 /**
@@ -32,7 +32,7 @@ template<class Symbol> NoSmoothingWithDictionary<Symbol>::NoSmoothingWithDiction
  *              N-Gram is treated as Bigram, etc.
  *
  */
-template<class Symbol> void NoSmoothingWithDictionary<Symbol>::setProbabilities(NGram<Symbol> nGram, int level) {
+template<class Symbol> void NoSmoothingWithDictionary<Symbol>::setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level) {
     nGram.replaceUnknownWords(dictionary);
     nGram.setProbabilityWithPseudoCount(0.0, level);
 }

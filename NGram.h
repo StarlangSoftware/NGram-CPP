@@ -43,9 +43,6 @@ public:
     vector<int> calculateCountsOfCounts(int height);
     double getPerplexity(vector<vector<Symbol>> corpus);
     double getProbability(initializer_list<Symbol> symbols);
-    void calculateNGramProbabilities(vector<vector<Symbol>> corpus, void (*train)(vector<vector<Symbol>> corpus, NGram<Symbol> nGram));
-    void calculateNGramProbabilities(void (*setProbabilities)(NGram<Symbol> nGram));
-    void calculateNGramProbabilities(void (*setProbabilities)(NGram<Symbol> nGram), int level);
     int getCount(Symbol* symbols, int length);
     void setAdjustedProbability(double* countsOfCounts, int height, double pZero);
     ~NGram();
@@ -73,7 +70,7 @@ template<class Symbol> NGram<Symbol>::NGram(vector<vector<Symbol>> corpus, int N
     for (int i = 0; i < N; i++){
         probabilityOfUnseen[i] = 0.0;
     }
-    rootNode = NGramNode<Symbol>{};
+    rootNode = new NGramNode<Symbol>(Symbol());
     for (i = 0; i < corpus.size(); i++){
         Symbol* data = corpus.at(i).data();
         addNGramSentence(data, corpus.at(i).size());
@@ -232,6 +229,9 @@ template<class Symbol> vector<int> NGram<Symbol>::calculateCountsOfCounts(int he
     int maxCount;
     maxCount = maximumOccurrence(height);
     int* countsOfCounts = new int[maxCount + 2];
+    for (int i = 0; i < maxCount + 2; i++){
+        countsOfCounts[i] = 0;
+    }
     updateCountsOfCounts(countsOfCounts, height);
     vector<int> result(maxCount + 2);
     for (int i = 0; i < maxCount + 2; i++){
@@ -292,7 +292,7 @@ template<class Symbol> double NGram<Symbol>::getUniGramPerplexity(vector<vector<
     int count = 0;
     for (int i = 0; i < corpus.size(); i++){
         for (int j = 0; j < corpus.at(i).size(); j++){
-            double p = getProbability(corpus.at(i).at(j));
+            double p = getProbability({corpus.at(i).at(j)});
             sum -= log(p);
             count++;
         }
@@ -313,7 +313,7 @@ template<class Symbol> double NGram<Symbol>::getBiGramPerplexity(vector<vector<S
     int count = 0;
     for (int i = 0; i < corpus.size(); i++){
         for (int j = 0; j < corpus.at(i).size() - 1; j++){
-            double p = getProbability(corpus.at(i).at(j), corpus.at(i).at(j + 1));
+            double p = getProbability({corpus.at(i).at(j), corpus.at(i).at(j + 1)});
             if (p == 0){
                 cout << "Zero probability";
             }
@@ -336,7 +336,7 @@ template<class Symbol> double NGram<Symbol>::getTriGramPerplexity(vector<vector<
     int count = 0;
     for (int i = 0; i < corpus.size(); i++){
         for (int j = 0; j < corpus.at(i).size() - 2; j++){
-            double p = getProbability(corpus.at(i).at(j), corpus.at(i).at(j + 1), corpus.at(i).at(j + 2));
+            double p = getProbability({corpus.at(i).at(j), corpus.at(i).at(j + 1), corpus.at(i).at(j + 2)});
             sum -= log(p);
             count++;
         }
@@ -417,38 +417,6 @@ template<class Symbol> double NGram<Symbol>::getTriGramProbability(Symbol w1, Sy
     } catch (UnseenCase& unseenCase) {
         return probabilityOfUnseen[2];
     }
-}
-
-/**
- * Calculates NGram probabilities using {@link vector<vector<Symbol>>} given corpus and smoothing method.
- *
- * @param corpus corpus for calculating NGram probabilities.
- * @param train train function for smoothing method.
- */
-template<class Symbol> void NGram<Symbol>::calculateNGramProbabilities(vector<vector<Symbol>> corpus,
-                                                void (*train)(vector<vector<Symbol>>, NGram<Symbol>)) {
-    train(corpus, this);
-}
-
-/**
- * Calculates NGram probabilities using simple smoothing.
- *
- * @param setProbabilities SetProbabilities function
- */
-template<class Symbol> void NGram<Symbol>::calculateNGramProbabilities(void (*setProbabilities)(NGram<Symbol>)) {
-    setProbabilities(this);
-}
-
-/**
- * Calculates NGram probabilities given simple smoothing and level.
- *
- * @param setProbabilities SetProbabilities function
- * @param level Level for which N-Gram probabilities will be set.
- *
- */
-template<class Symbol>
-void NGram<Symbol>::calculateNGramProbabilities(void (*setProbabilities)(NGram<Symbol>), int level) {
-    setProbabilities(this, level);
 }
 
 /**

@@ -2,8 +2,8 @@
 // Created by LMF319018 on 08/01/2019.
 //
 
-#ifndef NGRAM_ADDITIVESMOOTHING_H
-#define NGRAM_ADDITIVESMOOTHING_H
+#ifndef NGRAM_ADDITIVESMOOTHINGTEST_H
+#define NGRAM_ADDITIVESMOOTHINGTEST_H
 
 #include <cfloat>
 #include "TrainedSmoothing.h"
@@ -20,7 +20,9 @@ private:
     void learnParameters(vector<vector<Symbol>> corpus, int N);
 
 protected:
-    void setProbabilities(NGram<Symbol> nGram, int level);
+    void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
+public:
+    double getDelta();
 };
 
 /**
@@ -86,8 +88,16 @@ template<class Symbol> void AdditiveSmoothing<Symbol>::learnParameters(vector<ve
  *              N-gram can be set with this function. If level = 1, N-Gram is treated as UniGram, if level = 2,
  *              N-Gram is treated as Bigram, etc.
  */
-template<class Symbol> void AdditiveSmoothing<Symbol>::setProbabilities(NGram<Symbol> nGram, int level) {
+template<class Symbol> void AdditiveSmoothing<Symbol>::setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level) {
     nGram.setProbabilityWithPseudoCount(delta, level);
 }
 
-#endif //NGRAM_ADDITIVESMOOTHING_H
+/**
+ * Gets the best delta.
+ * @return Learned best delta.
+ */
+template<class Symbol> double AdditiveSmoothing<Symbol>::getDelta(){
+    return delta;
+}
+
+#endif //NGRAM_ADDITIVESMOOTHINGTEST_H

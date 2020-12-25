@@ -9,13 +9,13 @@
 
 template <class Symbol> class SimpleSmoothing {
 protected:
-    virtual void setProbabilities(NGram<Symbol> nGram, int level) = 0;
+    virtual void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level) = 0;
 public:
-    void setProbabilities(NGram<Symbol> nGram);
+    void setProbabilities(NGram<Symbol>& nGram);
 };
 
-template<class Symbol> void SimpleSmoothing<Symbol>::setProbabilities(NGram<Symbol> nGram) {
-    setProbabilities(nGram, nGram.getN());
+template<class Symbol> void SimpleSmoothing<Symbol>::setProbabilities(NGram<Symbol>& nGram) {
+    setProbabilitiesWithLevel(nGram, nGram.getN());
 }
 
 #endif //NGRAM_SIMPLESMOOTHING_H

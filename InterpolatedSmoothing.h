@@ -19,7 +19,7 @@ public:
     explicit InterpolatedSmoothing(void (*setProbabilities)(NGram<Symbol>));
 protected:
     void learnParameters(vector<vector<Symbol>> corpus, int N);
-    void setProbabilities(NGram<Symbol> nGram, int level);
+    void setProbabilities(NGram<Symbol>& nGram, int level);
 };
 
 /**
@@ -163,7 +163,7 @@ template<class Symbol> void InterpolatedSmoothing<Symbol>::learnParameters(vecto
  *              N-Gram is treated as Bigram, etc.
  *
  */
-template<class Symbol> void InterpolatedSmoothing<Symbol>::setProbabilities(NGram<Symbol> nGram, int level) {
+template<class Symbol> void InterpolatedSmoothing<Symbol>::setProbabilities(NGram<Symbol>& nGram, int level) {
     for (int j = 2; j<= nGram.getN(); j++){
         nGram.calculateNGramProbabilities(setProbabilitiesForSimpleSmoothing, j);
     }

@@ -9,10 +9,10 @@
 
 template <class Symbol> class NoSmoothing : public SimpleSmoothing<Symbol> {
 protected:
-    void setProbabilities(NGram<Symbol> nGram, int level);
+    void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
 
-template<class Symbol> void NoSmoothing<Symbol>::setProbabilities(NGram<Symbol> nGram, int level) {
+template<class Symbol> void NoSmoothing<Symbol>::setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level) {
     nGram.setProbabilityWithPseudoCount(0.0, level);
 }
 

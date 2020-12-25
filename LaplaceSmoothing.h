@@ -14,7 +14,7 @@ public:
     LaplaceSmoothing();
     explicit LaplaceSmoothing(double delta);
 protected:
-    void setProbabilities(NGram<Symbol> nGram, int level);
+    void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
 
 template<class Symbol> LaplaceSmoothing<Symbol>::LaplaceSmoothing() {
@@ -33,7 +33,7 @@ template<class Symbol> LaplaceSmoothing<Symbol>::LaplaceSmoothing(double delta) 
  *              N-gram can be set with this function. If level = 1, N-Gram is treated as UniGram, if level = 2,
  *              N-Gram is treated as Bigram, etc.
  */
-template<class Symbol> void LaplaceSmoothing<Symbol>::setProbabilities(NGram<Symbol> nGram, int level) {
+template<class Symbol> void LaplaceSmoothing<Symbol>::setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level) {
     nGram.setProbabilityWithPseudoCount(delta, level);
 }
 

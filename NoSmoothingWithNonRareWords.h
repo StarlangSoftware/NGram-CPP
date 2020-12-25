@@ -14,7 +14,7 @@ private:
 public:
     explicit NoSmoothingWithNonRareWords(double probability);
 protected:
-    void setProbabilities(NGram<Symbol> nGram, int level);
+    void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
 
 /**
@@ -34,7 +34,7 @@ template<class Symbol> NoSmoothingWithNonRareWords<Symbol>::NoSmoothingWithNonRa
  *              N-Gram is treated as Bigram, etc.
  *
  */
-template<class Symbol> void NoSmoothingWithNonRareWords<Symbol>::setProbabilities(NGram<Symbol> nGram, int level) {
+template<class Symbol> void NoSmoothingWithNonRareWords<Symbol>::setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level) {
     dictionary = nGram.constructDictionaryWithNonRareWords(level, probability);
     nGram.replaceUnknownWords(dictionary);
     nGram.setProbabilityWithPseudoCount(0.0, level);

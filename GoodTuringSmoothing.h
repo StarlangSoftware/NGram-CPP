@@ -12,9 +12,9 @@
 
 template <class Symbol> class GoodTuringSmoothing : public SimpleSmoothing<Symbol>{
 private:
-    double* linearRegressionOnCountsOfCounts(int* countsOfCounts, int length);
+    double* linearRegressionOnCountsOfCounts(vector<int> countsOfCounts);
 protected:
-    void setProbabilities(NGram<Symbol> nGram, int level);
+    void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
 
 /**
@@ -26,12 +26,12 @@ protected:
  *                       countsOfCounts[i] is the number of words occurred i times in the corpus.
  * @return Estimated counts of counts array. N[1] is the estimated count for out of vocabulary words.
  */
-template<class Symbol> double *GoodTuringSmoothing<Symbol>::linearRegressionOnCountsOfCounts(int *countsOfCounts, int length) {
-    double* N = new double[length];
+template<class Symbol> double *GoodTuringSmoothing<Symbol>::linearRegressionOnCountsOfCounts(vector<int> countsOfCounts) {
+    double* N = new double[countsOfCounts.size()];
     vector<int> r;
     vector<int> c;
     double xt, rt;
-    for (int i = 1; i < countsOfCounts.length; i++) {
+    for (int i = 1; i < countsOfCounts.size(); i++) {
         if (countsOfCounts[i] != 0) {
             r.push_back(i);
             c.push_back(countsOfCounts[i]);
@@ -62,7 +62,7 @@ template<class Symbol> double *GoodTuringSmoothing<Symbol>::linearRegressionOnCo
         Vector w = A.multiplyWithVectorFromRight(y);
         double w0 = w.getValue(0);
         double w1 = w.getValue(1);
-        for (int i = 1; i < length; i++){
+        for (int i = 1; i < countsOfCounts.size(); i++){
             N[i] = exp(log(i) * w1 + w0);
         }
     } catch (DeterminantZero& determinantZero) {
@@ -79,14 +79,13 @@ template<class Symbol> double *GoodTuringSmoothing<Symbol>::linearRegressionOnCo
  *              N-gram can be set with this function. If level = 1, N-Gram is treated as UniGram, if level = 2,
  *              N-Gram is treated as Bigram, etc.
  */
-template<class Symbol> void GoodTuringSmoothing<Symbol>::setProbabilities(NGram<Symbol> nGram, int level) {
-    int* countsOfCounts = nGram.calculateCountsOfCounts(level);
+template<class Symbol> void GoodTuringSmoothing<Symbol>::setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level) {
+    vector<int> countsOfCounts = nGram.calculateCountsOfCounts(level);
     double* N = linearRegressionOnCountsOfCounts(countsOfCounts);
     double sum = 0;
-    for (int r = 1; r < countsOfCounts.length; r++){
+    for (int r = 1; r < countsOfCounts.size(); r++){
         sum += countsOfCounts[r] * r;
     }
-    delete countsOfCounts;
     nGram.setAdjustedProbability(N, level, N[1] / sum);
     delete N;
 }

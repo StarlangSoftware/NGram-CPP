@@ -20,11 +20,8 @@ private:
     double probabilityOfUnseen = 0.0;
     NGramNode<Symbol>* unknown = nullptr;
     double childSum();
-    void updateCountsOfCounts(int* countsOfCounts, int height);
-    void setAdjustedProbability(double* N, int height, double vocabularySize, double pZero);
     void countWords(CounterHashMap<Symbol> wordCounter, int height);
     void replaceUnknownWords(unordered_set<Symbol> dictionary);
-    int getCount(Symbol* s, int length, int index);
 public:
     ~NGramNode();
     explicit NGramNode(Symbol symbol);
@@ -32,7 +29,10 @@ public:
     NGramNode(bool isRootNode, istream &inputFile);
     void addNGram(Symbol* s, int index, int height, int sentenceCount = 1);
     int getCount();
+    int getCount(Symbol* s, int length, int index);
     unsigned long size();
+    void updateCountsOfCounts(int* countsOfCounts, int height);
+    void setAdjustedProbability(double* N, int height, double vocabularySize, double pZero);
     void setProbabilityWithPseudoCount(double pseudoCount, int height, double vocabularySize);
     int maximumOccurrence(int height);
     Symbol generateNextString(vector<Symbol> s, int index);
@@ -338,7 +338,7 @@ template<class Symbol> void NGramNode<Symbol>::replaceUnknownWords(unordered_set
 template<class Symbol> int NGramNode<Symbol>::getCount(Symbol *s, int length, int index) {
     if (index < length){
         if (children.find(s[index]) != children.end()){
-            return children.find(s[index]).second.getCount(s, index + 1);
+            return children.find(s[index])->second->getCount(s, length, index + 1);
         } else {
             return 0;
         }
@@ -416,15 +416,24 @@ template<class Symbol> NGramNode<Symbol>::NGramNode(bool isRootNode, istream &in
 
 template<class Symbol> void NGramNode<Symbol>::prune(double threshold, int N) {
     if (N == 0){
+        Symbol maxElement = Symbol();
+        NGramNode<Symbol>* maxNode = nullptr;
         vector<Symbol> toBeDeleted;
         for (auto const& it : children){
             NGramNode<Symbol>* node = it.second;
             if (node->count / (count + 0.0) < threshold){
                 toBeDeleted.emplace_back(it.first);
             }
+            if (maxElement == Symbol() || node->count > children[maxElement]->count){
+                maxElement = it.first;
+                maxNode = node;
+            }
         }
         for (Symbol symbol1 : toBeDeleted){
             children.erase(symbol1);
+        }
+        if (children.size() == 0){
+            children[maxElement] = maxNode;
         }
     } else {
         for (auto const& it : children){
