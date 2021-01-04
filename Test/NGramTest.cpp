@@ -101,3 +101,18 @@ TEST_CASE("NGramTest-testPrune") {
     simpleBiGram.prune(0.9);
     REQUIRE(4 == simpleBiGram.getCount(new string[]{"<s>", "ali"}, 2));
 }
+
+TEST_CASE("NGramTest-loadNGram") {
+    NGram<string> nGram1 = NGram<string>("simple1.txt");
+    REQUIRE(5 == nGram1.getCount(new string[]{"<s>"}, 1));
+    REQUIRE(4 == nGram1.getCount(new string[]{"at"}, 1));
+    REQUIRE(2 == nGram1.getCount(new string[]{"mehmet"}, 1));
+    NGram<string> nGram2 = NGram<string>("simple2.txt");
+    REQUIRE(1 == nGram2.getCount(new string[]{"ver", "</s>"}, 2));
+    REQUIRE(4 == nGram2.getCount(new string[]{"<s>", "ali"}, 2));
+    REQUIRE(2 == nGram2.getCount(new string[]{"topu", "at"}, 2));
+    NGram<string> nGram3 = NGram<string>("simple3.txt");
+    REQUIRE(1 == nGram3.getCount(new string[]{"ayşe", "eve", "gitti"}, 3));
+    REQUIRE(2 == nGram3.getCount(new string[]{"topu", "at", "mehmet"}, 3));
+    REQUIRE(3 == nGram3.getCount(new string[]{"<s>", "ali", "topu"}, 3));
+}

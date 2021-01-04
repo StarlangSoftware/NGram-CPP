@@ -18,6 +18,7 @@ private:
     bool interpolated = false;
     unordered_set<Symbol> vocabulary;
     double* probabilityOfUnseen;
+    void loadNGram(ifstream &inputFile);
     int maximumOccurrence(int height);
     void updateCountsOfCounts(int* countsOfCounts, int height);
     double getUniGramPerplexity(vector<vector<Symbol>> corpus);
@@ -28,6 +29,7 @@ private:
     double getTriGramProbability(Symbol w1, Symbol w2, Symbol w3);
 public:
     NGram(vector<vector<Symbol>> corpus, int N);
+    explicit NGram(string fileName);
     explicit NGram(int N);
     explicit NGram(ifstream &inputFile);
     void setN(int N);
@@ -466,7 +468,7 @@ template<class Symbol> void NGram<Symbol>::save(const string &fileName){
     outputFile.close();
 }
 
-template<class Symbol>NGram<Symbol>::NGram(ifstream &inputFile) {
+template<class Symbol> void NGram<Symbol>::loadNGram(ifstream &inputFile){
     Symbol s;
     int vocabularySize;
     inputFile >> N;
@@ -482,6 +484,17 @@ template<class Symbol>NGram<Symbol>::NGram(ifstream &inputFile) {
         vocabulary.emplace(s);
     }
     rootNode = new NGramNode<Symbol>(true, inputFile);
+}
+
+template<class Symbol>NGram<Symbol>::NGram(ifstream &inputFile) {
+    loadNGram(inputFile);
+}
+
+template<class Symbol>NGram<Symbol>::NGram(string fileName) {
+    ifstream inputFile;
+    inputFile.open(fileName, ifstream::in);
+    loadNGram(inputFile);
+    inputFile.close();
 }
 
 template<class Symbol> void NGram<Symbol>::prune(double threshold) {
