@@ -90,7 +90,7 @@ template<class Symbol> NGram<Symbol>::NGram(int N) {
     for (int i = 0; i < N; i++){
         probabilityOfUnseen[i] = 0.0;
     }
-    rootNode = new NGramNode<Symbol>{};
+    rootNode = new NGramNode<Symbol>(Symbol());
 }
 
 /**
