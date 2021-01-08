@@ -5,6 +5,7 @@
 #ifndef DATASTRUCTURE_COUNTERHASHMAP_H
 #define DATASTRUCTURE_COUNTERHASHMAP_H
 
+#include <fstream>
 #include <map>
 #include <string>
 
@@ -12,6 +13,7 @@ using namespace std;
 
 template <class K> class CounterHashMap : public map<K, int> {
 public:
+    explicit CounterHashMap(ifstream& inputFile);
     CounterHashMap();
     void put(K key);
     void putNTimes(K key, int N);
@@ -23,6 +25,7 @@ public:
     void add(CounterHashMap<K> toBeAdded);
     vector<pair<K, int>> topN(int N);
     string to_string();
+    void serialize(ostream& outputFile);
 };
 
 /**
@@ -136,7 +139,7 @@ template<class K> K CounterHashMap<K>::max(double threshold) {
     if (maxCount / (total + 0.0) > threshold) {
         return maxKey;
     } else {
-        return nullptr;
+        return K();
     }
 }
 
@@ -146,7 +149,7 @@ template<class K> K CounterHashMap<K>::max(double threshold) {
  * @param toBeAdded CounterHashMap to be added to this counterHashMap.
  */
 template<class K> void CounterHashMap<K>::add(CounterHashMap<K> toBeAdded) {
-    for (auto item = this->begin(); item != this->end(); item++){
+    for (auto item = toBeAdded.begin(); item != toBeAdded.end(); item++){
         putNTimes(item->first, toBeAdded.find(item->first)->second);
     }
 }
@@ -162,7 +165,7 @@ template<class K> void CounterHashMap<K>::add(CounterHashMap<K> toBeAdded) {
 template<class K> vector<pair<K, int>> CounterHashMap<K>::topN(int N) {
     vector<pair<K, int>> result;
     for (auto item = this->begin(); item != this->end(); item++) {
-        result.push_back(item);
+        result.emplace_back(*item);
     }
     sort(result.begin(), result.end(),
          [](pair<K, int> o1, pair<K, int> o2) -> bool
@@ -178,11 +181,33 @@ template<class K> vector<pair<K, int>> CounterHashMap<K>::topN(int N) {
  * @return String of the each entry's key and value.
  */
 template<class K> string CounterHashMap<K>::to_string() {
-    string result = "";
+    string result;
     for (auto item = this->begin(); item != this->end(); item++) {
         result = result + item->first.to_string() + ":" + item->second.to_string() + "-";
     }
     return result;
+}
+
+template<class K>
+void CounterHashMap<K>::serialize(ostream &outputFile) {
+    outputFile << this->size();
+    for (auto item = this->begin(); item != this->end(); item++) {
+        outputFile << item->first << "\n";
+        outputFile << item->second << "\n";
+    }
+}
+
+template<class K>
+CounterHashMap<K>::CounterHashMap(ifstream &inputFile) {
+    int size;
+    inputFile >> size;
+    for (int i = 0; i < size; i++){
+        K item;
+        inputFile >> item;
+        int count;
+        inputFile >> count;
+        this->emplace(item, count);
+    }
 }
 
 #endif //DATASTRUCTURE_COUNTERHASHMAP_H
