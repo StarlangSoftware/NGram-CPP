@@ -116,3 +116,18 @@ TEST_CASE("NGramTest-loadNGram") {
     REQUIRE(2 == nGram3.getCount(new string[]{"topu", "at", "mehmet"}, 3));
     REQUIRE(3 == nGram3.getCount(new string[]{"<s>", "ali", "topu"}, 3));
 }
+
+TEST_CASE("NGramTest-merge") {
+    auto* nGram1 = new NGram<string>("simple1a.txt");
+    nGram1->merge(*(new NGram<string>("simple1b.txt")));
+    REQUIRE(18 == nGram1->vocabularySize());
+    auto* nGram2 = new NGram<string>("simple2a.txt");
+    nGram2->merge(*(new NGram<string>("simple2b.txt")));
+    nGram2->merge(*(new NGram<string>("simple2c.txt")));
+    nGram2->merge(*(new NGram<string>("simple2d.txt")));
+    REQUIRE(21 == nGram2->vocabularySize());
+    auto* nGram3 = new NGram<string>("simple3a.txt");
+    nGram3->merge(*(new NGram<string>("simple3b.txt")));
+    nGram3->merge(*(new NGram<string>("simple3c.txt")));
+    REQUIRE(20 == nGram3->vocabularySize());
+}

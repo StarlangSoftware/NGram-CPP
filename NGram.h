@@ -32,6 +32,7 @@ public:
     explicit NGram(string fileName);
     explicit NGram(int N);
     explicit NGram(ifstream &inputFile);
+    void merge(NGram<Symbol>& toBeMerged);
     void setN(int N);
     int getN();
     void addNGram(Symbol* symbols, int size);
@@ -501,6 +502,14 @@ template<class Symbol> void NGram<Symbol>::prune(double threshold) {
     if (threshold > 0.0 && threshold <= 1.0){
         rootNode->prune(threshold, N - 1);
     }
+}
+
+template<class Symbol> void NGram<Symbol>::merge(NGram<Symbol>& toBeMerged) {
+    if (N != toBeMerged.getN()){
+        return;
+    }
+    vocabulary.template merge(toBeMerged.vocabulary);
+    rootNode->merge(toBeMerged.rootNode);
 }
 
 #endif //NGRAM_NGRAM_H

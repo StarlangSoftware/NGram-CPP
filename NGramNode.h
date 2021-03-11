@@ -27,6 +27,7 @@ public:
     explicit NGramNode(Symbol symbol);
     NGramNode();
     NGramNode(bool isRootNode, istream &inputFile);
+    void merge(NGramNode<Symbol>* toBeMerged);
     void addNGram(Symbol* s, int index, int height, int sentenceCount = 1);
     int getCount();
     int getCount(Symbol* s, int length, int index);
@@ -441,6 +442,20 @@ template<class Symbol> void NGramNode<Symbol>::prune(double threshold, int N) {
             node->prune(threshold, N - 1);
         }
     }
+}
+
+template<class Symbol> void NGramNode<Symbol>::merge(NGramNode<Symbol>* toBeMerged) {
+    for (auto const& it : children){
+        if (toBeMerged->children.find(it.first) != toBeMerged->children.end()){
+            it.second->merge(toBeMerged->children[it.first]);
+        }
+    }
+    for (auto const& it : toBeMerged->children){
+        if (children.find(it.first) == children.end()){
+            children[it.first] = toBeMerged->children[it.first];
+        }
+    }
+    count += toBeMerged->getCount();
 }
 
 #endif //NGRAM_NGRAMNODE_H
