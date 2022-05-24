@@ -189,7 +189,11 @@ template<class Symbol> void NGram<Symbol>::setProbabilityWithPseudoCount(double 
         sizeOfVocabulary = vocabularySize();
     }
     rootNode->setProbabilityWithPseudoCount(pseudoCount, height, sizeOfVocabulary);
-    probabilityOfUnseen[height - 1] = 1.0 / sizeOfVocabulary;
+    if (pseudoCount != 0){
+        probabilityOfUnseen[height - 1] = 1.0 / sizeOfVocabulary;
+    } else {
+        probabilityOfUnseen[height - 1] = 0.0;
+    }
 }
 
 /**

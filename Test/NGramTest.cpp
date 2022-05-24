@@ -62,11 +62,11 @@ TEST_CASE("NGramTest-testVocabularySizeComplex") {
     NGram<string>  complexUniGram = NGram<string>(trainCorpus, 1);
     REQUIRE(57625 == complexUniGram.vocabularySize());
     vector<vector<string>> testCorpus = readCorpus("../Test/test.txt");
-    complexUniGram = NGram<string>(testCorpus, 1);
-    REQUIRE(55485 == complexUniGram.vocabularySize());
+    NGram<string> complexUniGram2 = NGram<string>(testCorpus, 1);
+    REQUIRE(55485 == complexUniGram2.vocabularySize());
     vector<vector<string>> validationCorpus = readCorpus("../Test/validation.txt");
-    complexUniGram = NGram<string>(validationCorpus, 1);
-    REQUIRE(35663 == complexUniGram.vocabularySize());
+    NGram<string> complexUniGram3 = NGram<string>(validationCorpus, 1);
+    REQUIRE(35663 == complexUniGram3.vocabularySize());
 }
 
 TEST_CASE("NGramTest-testPrune") {
