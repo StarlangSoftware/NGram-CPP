@@ -3,7 +3,7 @@
 //
 
 #include "catch.hpp"
-#include "../AdditiveSmoothing.h"
+#include "../src/AdditiveSmoothing.h"
 #include "ReadCorpus.h"
 
 TEST_CASE("AdditiveSmoothingTest-testPerplexityComplex") {

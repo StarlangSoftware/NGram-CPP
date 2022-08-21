@@ -3,7 +3,7 @@
 //
 
 #include "catch.hpp"
-#include "../InterpolatedSmoothing.h"
+#include "../src/InterpolatedSmoothing.h"
 #include "ReadCorpus.h"
 
 TEST_CASE("InterpolatedSmoothingTest-testPerplexityComplex") {

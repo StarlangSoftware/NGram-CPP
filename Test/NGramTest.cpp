@@ -6,7 +6,7 @@
 
 #include <string>
 #include "catch.hpp"
-#include <../NGram.h>
+#include "../src/NGram.h"
 #include "ReadCorpus.h"
 
 TEST_CASE("NGramTest-testGetCountSimple") {

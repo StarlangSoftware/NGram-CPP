@@ -3,7 +3,7 @@
 //
 
 #include "catch.hpp"
-#include "../NoSmoothing.h"
+#include "../src/NoSmoothing.h"
 #include "ReadCorpus.h"
 
 TEST_CASE("NoSmoothingTest-testPerplexitySimple") {

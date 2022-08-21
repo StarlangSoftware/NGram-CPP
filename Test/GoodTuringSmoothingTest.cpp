@@ -3,7 +3,7 @@
 //
 
 #include "catch.hpp"
-#include "../GoodTuringSmoothing.h"
+#include "../src/GoodTuringSmoothing.h"
 #include "ReadCorpus.h"
 
 TEST_CASE("GoodTuringSmoothingTest-testPerplexitySimple") {

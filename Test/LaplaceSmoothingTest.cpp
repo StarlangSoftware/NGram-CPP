@@ -3,7 +3,7 @@
 //
 
 #include "catch.hpp"
-#include "../LaplaceSmoothing.h"
+#include "../src/LaplaceSmoothing.h"
 #include "ReadCorpus.h"
 
 TEST_CASE("LaplaceSmoothingTest-testPerplexitySimple") {
