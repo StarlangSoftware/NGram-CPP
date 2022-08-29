@@ -357,10 +357,9 @@ template<class Symbol> int NGramNode<Symbol>::getCount(Symbol *s, int length, in
 template<class Symbol> Symbol NGramNode<Symbol>::generateNextString(vector<Symbol> s, int index) {
     double sum = 0.0, prob;
     if (index == s.size()){
-        random_device rd;
-        mt19937 gen(rd());
         uniform_real_distribution<>distribution (0.0, 1.0);
-        prob = distribution(gen);
+        default_random_engine randomEngine = default_random_engine (time(0));
+        prob = distribution(randomEngine);
         for (auto const& it : children){
             NGramNode<Symbol>* node = it.second;
             if (prob < node->probability + sum){
