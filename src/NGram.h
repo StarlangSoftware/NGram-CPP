@@ -19,14 +19,14 @@ private:
     unordered_set<Symbol> vocabulary;
     double* probabilityOfUnseen;
     void loadNGram(ifstream &inputFile);
-    int maximumOccurrence(int height);
-    void updateCountsOfCounts(int* countsOfCounts, int height);
-    double getUniGramPerplexity(const vector<vector<Symbol>>& corpus);
-    double getBiGramPerplexity(const vector<vector<Symbol>>& corpus);
-    double getTriGramPerplexity(const vector<vector<Symbol>>& corpus);
-    double getUniGramProbability(const Symbol& w1);
-    double getBiGramProbability(const Symbol& w1, const Symbol& w2);
-    double getTriGramProbability(const Symbol& w1, const Symbol& w2, const Symbol& w3);
+    int maximumOccurrence(int height) const;
+    void updateCountsOfCounts(int* countsOfCounts, int height) const;
+    double getUniGramPerplexity(const vector<vector<Symbol>>& corpus) const;
+    double getBiGramPerplexity(const vector<vector<Symbol>>& corpus) const;
+    double getTriGramPerplexity(const vector<vector<Symbol>>& corpus) const;
+    double getUniGramProbability(const Symbol& w1) const;
+    double getBiGramProbability(const Symbol& w1, const Symbol& w2) const;
+    double getTriGramProbability(const Symbol& w1, const Symbol& w2, const Symbol& w3) const;
 public:
     NGram(const vector<vector<Symbol>>& corpus, int N);
     explicit NGram(const string& fileName);
@@ -34,19 +34,19 @@ public:
     explicit NGram(ifstream &inputFile);
     void merge(NGram<Symbol>& toBeMerged);
     void setN(int nGramSize);
-    int getN();
+    int getN() const;
     void addNGram(Symbol* symbols, int size);
     void addNGramSentence(const vector<Symbol>& symbols, int sentenceCount = 1);
-    double vocabularySize();
+    double vocabularySize() const;
     void setLambda(double _lambda1);
     void setLambda(double _lambda1, double _lambda2);
     void setProbabilityWithPseudoCount(double pseudoCount, int height);
     void replaceUnknownWords(const unordered_set<Symbol>& dictionary);
-    unordered_set<Symbol> constructDictionaryWithNonRareWords(int level, double probability);
-    vector<int> calculateCountsOfCounts(int height);
-    double getPerplexity(const vector<vector<Symbol>>& corpus);
-    double getProbability(const initializer_list<Symbol>& symbols);
-    int getCount(Symbol* symbols, int length);
+    unordered_set<Symbol> constructDictionaryWithNonRareWords(int level, double probability) const;
+    vector<int> calculateCountsOfCounts(int height) const;
+    double getPerplexity(const vector<vector<Symbol>>& corpus) const;
+    double getProbability(const initializer_list<Symbol>& symbols) const;
+    int getCount(Symbol* symbols, int length) const;
     void setAdjustedProbability(double* countsOfCounts, int height, double pZero);
     ~NGram();
     void prune(double threshold);
@@ -98,7 +98,7 @@ template<class Symbol> NGram<Symbol>::NGram(int N) {
  *
  * @return size of ngram.
  */
-template<class Symbol> int NGram<Symbol>::getN() {
+template<class Symbol> int NGram<Symbol>::getN() const{
     return N;
 }
 
@@ -142,7 +142,7 @@ template<class Symbol> void NGram<Symbol>::addNGramSentence(const vector<Symbol>
 /**
  * @return vocabulary size.
  */
-template<class Symbol> double NGram<Symbol>::vocabularySize() {
+template<class Symbol> double NGram<Symbol>::vocabularySize() const{
     return vocabulary.size();
 }
 
@@ -213,7 +213,7 @@ template<class Symbol> void NGram<Symbol>::replaceUnknownWords(const unordered_s
  * @param probability probability threshold for nonrare words.
  * @return {@link unordered_set} nonrare words.
  */
-template<class Symbol> unordered_set<Symbol> NGram<Symbol>::constructDictionaryWithNonRareWords(int level, double probability) {
+template<class Symbol> unordered_set<Symbol> NGram<Symbol>::constructDictionaryWithNonRareWords(int level, double probability) const{
     unordered_set<Symbol> result;
     CounterHashMap<Symbol> wordCounter;
     rootNode->countWords(wordCounter, level);
@@ -232,7 +232,7 @@ template<class Symbol> unordered_set<Symbol> NGram<Symbol>::constructDictionaryW
  *                N-Gram is treated as Bigram, etc.
  * @return counts of counts of NGrams.
  */
-template<class Symbol> vector<int> NGram<Symbol>::calculateCountsOfCounts(int height) {
+template<class Symbol> vector<int> NGram<Symbol>::calculateCountsOfCounts(int height) const{
     int maxCount;
     maxCount = maximumOccurrence(height);
     int* countsOfCounts = new int[maxCount + 2];
@@ -253,7 +253,7 @@ template<class Symbol> vector<int> NGram<Symbol>::calculateCountsOfCounts(int he
  *               N-Gram is treated as Bigram, etc.
  * @return maximum occurrence in given height.
  */
-template<class Symbol> int NGram<Symbol>::maximumOccurrence(int height) {
+template<class Symbol> int NGram<Symbol>::maximumOccurrence(int height) const{
     return rootNode->maximumOccurrence(height);
 }
 
@@ -263,7 +263,7 @@ template<class Symbol> int NGram<Symbol>::maximumOccurrence(int height) {
  * @param height  height for NGram. If height = 1, N-Gram is treated as UniGram, if height = 2,
  *                N-Gram is treated as Bigram, etc.
  */
-template<class Symbol> void NGram<Symbol>::updateCountsOfCounts(int* countsOfCounts, int height) {
+template<class Symbol> void NGram<Symbol>::updateCountsOfCounts(int* countsOfCounts, int height) const{
     rootNode->updateCountsOfCounts(countsOfCounts, height);
 }
 
@@ -273,7 +273,7 @@ template<class Symbol> void NGram<Symbol>::updateCountsOfCounts(int* countsOfCou
  * @param corpus corpus whose perplexity is calculated.
  * @return perplexity of given corpus
  */
-template<class Symbol> double NGram<Symbol>::getPerplexity(const vector<vector<Symbol>>& corpus) {
+template<class Symbol> double NGram<Symbol>::getPerplexity(const vector<vector<Symbol>>& corpus) const{
     switch (N){
         case 1:
             return getUniGramPerplexity(corpus);
@@ -294,7 +294,7 @@ template<class Symbol> double NGram<Symbol>::getPerplexity(const vector<vector<S
  *
  * @return unigram perplexity of corpus.
  */
-template<class Symbol> double NGram<Symbol>::getUniGramPerplexity(const vector<vector<Symbol>>& corpus) {
+template<class Symbol> double NGram<Symbol>::getUniGramPerplexity(const vector<vector<Symbol>>& corpus) const{
     double sum = 0;
     int count = 0;
     for (int i = 0; i < corpus.size(); i++){
@@ -315,7 +315,7 @@ template<class Symbol> double NGram<Symbol>::getUniGramPerplexity(const vector<v
  *
  * @return bigram perplexity of given corpus.
  */
-template<class Symbol> double NGram<Symbol>::getBiGramPerplexity(const vector<vector<Symbol>>& corpus) {
+template<class Symbol> double NGram<Symbol>::getBiGramPerplexity(const vector<vector<Symbol>>& corpus) const{
     double sum = 0;
     int count = 0;
     for (int i = 0; i < corpus.size(); i++){
@@ -338,7 +338,7 @@ template<class Symbol> double NGram<Symbol>::getBiGramPerplexity(const vector<ve
  * @param corpus corpus whose trigram perplexity is calculated.
  * @return trigram perplexity of given corpus.
  */
-template<class Symbol> double NGram<Symbol>::getTriGramPerplexity(const vector<vector<Symbol>>& corpus) {
+template<class Symbol> double NGram<Symbol>::getTriGramPerplexity(const vector<vector<Symbol>>& corpus) const{
     double sum = 0;
     int count = 0;
     for (int i = 0; i < corpus.size(); i++){
@@ -358,7 +358,7 @@ template<class Symbol> double NGram<Symbol>::getTriGramPerplexity(const vector<v
  * @param symbols sequence of symbol.
  * @return probability of given sequence.
  */
-template<class Symbol> double NGram<Symbol>::getProbability(const initializer_list<Symbol>& symbols) {
+template<class Symbol> double NGram<Symbol>::getProbability(const initializer_list<Symbol>& symbols) const{
     switch (N){
         case 1:
             return getUniGramProbability(*(symbols.begin()));
@@ -393,7 +393,7 @@ template<class Symbol> double NGram<Symbol>::getProbability(const initializer_li
  * @param w1 a unigram symbol.
  * @return probability of given unigram.
  */
-template<class Symbol> double NGram<Symbol>::getUniGramProbability(const Symbol& w1) {
+template<class Symbol> double NGram<Symbol>::getUniGramProbability(const Symbol& w1) const{
     return rootNode->getUniGramProbability(w1);
 }
 
@@ -403,7 +403,7 @@ template<class Symbol> double NGram<Symbol>::getUniGramProbability(const Symbol&
  * @param w2 second gram of bigram
  * @return probability of bigram formed by w1 and w2.
  */
-template<class Symbol> double NGram<Symbol>::getBiGramProbability(const Symbol& w1, const Symbol& w2) {
+template<class Symbol> double NGram<Symbol>::getBiGramProbability(const Symbol& w1, const Symbol& w2) const{
     try {
         return rootNode->getBiGramProbability(w1, w2);
     } catch (UnseenCase& unseenCase) {
@@ -418,7 +418,7 @@ template<class Symbol> double NGram<Symbol>::getBiGramProbability(const Symbol& 
  * @param w3 third gram of trigram
  * @return probability of bigram formed by w1, w2, w3.
  */
-template<class Symbol> double NGram<Symbol>::getTriGramProbability(const Symbol& w1, const Symbol& w2, const Symbol& w3) {
+template<class Symbol> double NGram<Symbol>::getTriGramProbability(const Symbol& w1, const Symbol& w2, const Symbol& w3) const{
     try {
         return rootNode->getTriGramProbability(w1, w2, w3);
     } catch (UnseenCase& unseenCase) {
@@ -431,7 +431,7 @@ template<class Symbol> double NGram<Symbol>::getTriGramProbability(const Symbol&
  * @param symbols sequence of symbol.
  * @return count of symbols.
  */
-template<class Symbol> int NGram<Symbol>::getCount(Symbol *symbols, int length) {
+template<class Symbol> int NGram<Symbol>::getCount(Symbol *symbols, int length) const{
     return rootNode->getCount(symbols, length, 0);
 }
 

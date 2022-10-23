@@ -10,8 +10,8 @@
 template <class Symbol> class TrainedSmoothing : public SimpleSmoothing<Symbol>{
 protected:
     virtual void learnParameters(const vector<vector<Symbol>>& corpus, int N) = 0;
-    double newLowerBound(double current, double currentLowerBound, double currentUpperBound, int numberOfParts);
-    double newUpperBound(double current, double currentLowerBound, double currentUpperBound, int numberOfParts);
+    double newLowerBound(double current, double currentLowerBound, double currentUpperBound, int numberOfParts) const;
+    double newUpperBound(double current, double currentLowerBound, double currentUpperBound, int numberOfParts) const;
 public:
     void train(const vector<vector<Symbol>>& corpus, NGram<Symbol>& nGram);
 };
@@ -24,7 +24,7 @@ public:
  * @param numberOfParts number of parts between lower and upper bound.
  * @return new lower bound
  */
-template<class Symbol> double TrainedSmoothing<Symbol>::newLowerBound(double current, double currentLowerBound, double currentUpperBound, int numberOfParts) {
+template<class Symbol> double TrainedSmoothing<Symbol>::newLowerBound(double current, double currentLowerBound, double currentUpperBound, int numberOfParts) const{
     if (current != currentLowerBound){
         return current - (currentUpperBound - currentLowerBound) / numberOfParts;
     } else {
@@ -41,7 +41,7 @@ template<class Symbol> double TrainedSmoothing<Symbol>::newLowerBound(double cur
  * @return new upper bound
  */
 template<class Symbol> double TrainedSmoothing<Symbol>::newUpperBound(double current, double currentLowerBound, double currentUpperBound,
-                                               int numberOfParts) {
+                                               int numberOfParts) const{
     if (current != currentUpperBound){
         return current + (currentUpperBound - currentLowerBound) / numberOfParts;
     } else {

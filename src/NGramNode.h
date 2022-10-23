@@ -19,8 +19,8 @@ private:
     double probability = 0.0;
     double probabilityOfUnseen = 0.0;
     NGramNode<Symbol>* unknown = nullptr;
-    double childSum();
-    void countWords(const CounterHashMap<Symbol>& wordCounter, int height);
+    double childSum() const;
+    void countWords(const CounterHashMap<Symbol>& wordCounter, int height) const;
     void replaceUnknownWords(const unordered_set<Symbol>& dictionary);
 public:
     ~NGramNode();
@@ -29,17 +29,17 @@ public:
     NGramNode(bool isRootNode, istream &inputFile);
     void merge(NGramNode<Symbol>* toBeMerged);
     void addNGram(const vector<Symbol>& s, int index, int height, int sentenceCount = 1);
-    int getCount();
-    int getCount(Symbol* s, int length, int index);
-    unsigned long size();
-    void updateCountsOfCounts(int* countsOfCounts, int height);
+    int getCount() const;
+    int getCount(Symbol* s, int length, int index) const;
+    unsigned long size() const;
+    void updateCountsOfCounts(int* countsOfCounts, int height) const;
     void setAdjustedProbability(double* N, int height, double vocabularySize, double pZero);
     void setProbabilityWithPseudoCount(double pseudoCount, int height, double vocabularySize);
-    int maximumOccurrence(int height);
-    Symbol generateNextString(const vector<Symbol>& s, int index);
-    double getUniGramProbability(const Symbol& w1);
-    double getBiGramProbability(const Symbol& w1, const Symbol& w2);
-    double getTriGramProbability(const Symbol& w1, const Symbol& w2, const Symbol& w3);
+    int maximumOccurrence(int height) const;
+    Symbol generateNextString(const vector<Symbol>& s, int index) const;
+    double getUniGramProbability(const Symbol& w1) const;
+    double getBiGramProbability(const Symbol& w1, const Symbol& w2) const;
+    double getTriGramProbability(const Symbol& w1, const Symbol& w2, const Symbol& w3) const;
     void prune(double threshold, int N);
     void serialize(bool isRootNode, ostream &outputFile, int level);
 };
@@ -61,7 +61,7 @@ template<class Symbol> NGramNode<Symbol>::NGramNode() {
  * Gets count of this node.
  * @return count of this node.
  */
-template<class Symbol> int NGramNode<Symbol>::getCount() {
+template<class Symbol> int NGramNode<Symbol>::getCount() const{
     return count;
 }
 
@@ -69,7 +69,7 @@ template<class Symbol> int NGramNode<Symbol>::getCount() {
  * Gets the size of children of this node.
  * @return size of children of {@link NGramNode} this node.
  */
-template<class Symbol> unsigned long NGramNode<Symbol>::size() {
+template<class Symbol> unsigned long NGramNode<Symbol>::size() const{
     return children.size();
 }
 
@@ -79,7 +79,7 @@ template<class Symbol> unsigned long NGramNode<Symbol>::size() {
  * @param height height for NGram.
  * @return maximum occurrence.
  */
-template<class Symbol> int NGramNode<Symbol>::maximumOccurrence(int height) {
+template<class Symbol> int NGramNode<Symbol>::maximumOccurrence(int height) const{
     int current, max = 0;
     if (height == 0){
         return count;
@@ -99,7 +99,7 @@ template<class Symbol> int NGramNode<Symbol>::maximumOccurrence(int height) {
  *
  * @return sum of counts of children nodes.
  */
-template<class Symbol> double NGramNode<Symbol>::childSum() {
+template<class Symbol> double NGramNode<Symbol>::childSum() const{
     double sum = 0;
     for (auto const& it : children){
         NGramNode<Symbol>* child = it.second;
@@ -117,7 +117,7 @@ template<class Symbol> double NGramNode<Symbol>::childSum() {
  * @param height height for NGram. if height = 1, If level = 1, N-Gram is treated as UniGram, if level = 2,
  *               N-Gram is treated as Bigram, etc.
  */
-template<class Symbol> void NGramNode<Symbol>::updateCountsOfCounts(int* countsOfCounts, int height) {
+template<class Symbol> void NGramNode<Symbol>::updateCountsOfCounts(int* countsOfCounts, int height) const{
     if (height == 0){
         countsOfCounts[count]++;
     } else {
@@ -225,7 +225,7 @@ template<class Symbol> void NGramNode<Symbol>::addNGram(const vector<Symbol>& s,
  * @param w1 unigram.
  * @return unigram probability of given symbol.
  */
-template<class Symbol> double NGramNode<Symbol>::getUniGramProbability(const Symbol& w1) {
+template<class Symbol> double NGramNode<Symbol>::getUniGramProbability(const Symbol& w1) const{
     if (children.find(w1) != children.end()){
         return children.find(w1)->second->probability;
     } else {
@@ -243,7 +243,7 @@ template<class Symbol> double NGramNode<Symbol>::getUniGramProbability(const Sym
  * @return probability of given bigram
  * @throws UnseenCase
  */
-template<class Symbol> double NGramNode<Symbol>::getBiGramProbability(const Symbol& w1, const Symbol& w2) {
+template<class Symbol> double NGramNode<Symbol>::getBiGramProbability(const Symbol& w1, const Symbol& w2) const{
     NGramNode<Symbol>* child;
     if (children.find(w1) != children.end()){
         child = children.find(w1)->second;
@@ -264,7 +264,7 @@ template<class Symbol> double NGramNode<Symbol>::getBiGramProbability(const Symb
  * @return probability of given trigram.
  * @throws UnseenCase
  */
-template<class Symbol> double NGramNode<Symbol>::getTriGramProbability(const Symbol& w1, const Symbol& w2, const Symbol& w3) {
+template<class Symbol> double NGramNode<Symbol>::getTriGramProbability(const Symbol& w1, const Symbol& w2, const Symbol& w3) const{
     NGramNode<Symbol>* child;
     if (children.find(w1) != children.end()){
         child = children.find(w1)->second;
@@ -283,7 +283,7 @@ template<class Symbol> double NGramNode<Symbol>::getTriGramProbability(const Sym
  * @param height height for NGram. if height = 1, If level = 1, N-Gram is treated as UniGram, if level = 2,
  *               N-Gram is treated as Bigram, etc.
  */
-template<class Symbol> void NGramNode<Symbol>::countWords(const CounterHashMap<Symbol>& wordCounter, int height) {
+template<class Symbol> void NGramNode<Symbol>::countWords(const CounterHashMap<Symbol>& wordCounter, int height) const{
     if (height == 0){
         wordCounter.putNTimes(symbol, count);
     } else {
@@ -336,7 +336,7 @@ template<class Symbol> void NGramNode<Symbol>::replaceUnknownWords(const unorder
  * @param index index of symbol whose count is returned
  * @return count of the symbol.
  */
-template<class Symbol> int NGramNode<Symbol>::getCount(Symbol *s, int length, int index) {
+template<class Symbol> int NGramNode<Symbol>::getCount(Symbol *s, int length, int index) const{
     if (index < length){
         if (children.find(s[index]) != children.end()){
             return children.find(s[index])->second->getCount(s, length, index + 1);
@@ -354,7 +354,7 @@ template<class Symbol> int NGramNode<Symbol>::getCount(Symbol *s, int length, in
  * @param index index index of generated string
  * @return generated string.
  */
-template<class Symbol> Symbol NGramNode<Symbol>::generateNextString(const vector<Symbol>& s, int index) {
+template<class Symbol> Symbol NGramNode<Symbol>::generateNextString(const vector<Symbol>& s, int index) const{
     double sum = 0.0, prob;
     if (index == s.size()){
         uniform_real_distribution<>distribution (0.0, 1.0);

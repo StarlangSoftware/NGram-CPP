@@ -103,31 +103,31 @@ TEST_CASE("NGramTest-testPrune") {
 }
 
 TEST_CASE("NGramTest-loadNGram") {
-    NGram<string> nGram1 = NGram<string>("simple1.txt");
+    NGram<string> nGram1 = NGram<string>("../simple1.txt");
     REQUIRE(5 == nGram1.getCount(new string[]{"<s>"}, 1));
     REQUIRE(4 == nGram1.getCount(new string[]{"at"}, 1));
     REQUIRE(2 == nGram1.getCount(new string[]{"mehmet"}, 1));
-    NGram<string> nGram2 = NGram<string>("simple2.txt");
+    NGram<string> nGram2 = NGram<string>("../simple2.txt");
     REQUIRE(1 == nGram2.getCount(new string[]{"ver", "</s>"}, 2));
     REQUIRE(4 == nGram2.getCount(new string[]{"<s>", "ali"}, 2));
     REQUIRE(2 == nGram2.getCount(new string[]{"topu", "at"}, 2));
-    NGram<string> nGram3 = NGram<string>("simple3.txt");
+    NGram<string> nGram3 = NGram<string>("../simple3.txt");
     REQUIRE(1 == nGram3.getCount(new string[]{"ayşe", "eve", "gitti"}, 3));
     REQUIRE(2 == nGram3.getCount(new string[]{"topu", "at", "mehmet"}, 3));
     REQUIRE(3 == nGram3.getCount(new string[]{"<s>", "ali", "topu"}, 3));
 }
 
 TEST_CASE("NGramTest-merge") {
-    auto* nGram1 = new NGram<string>("simple1a.txt");
-    nGram1->merge(*(new NGram<string>("simple1b.txt")));
+    auto* nGram1 = new NGram<string>("../simple1a.txt");
+    nGram1->merge(*(new NGram<string>("../simple1b.txt")));
     REQUIRE(18 == nGram1->vocabularySize());
-    auto* nGram2 = new NGram<string>("simple2a.txt");
-    nGram2->merge(*(new NGram<string>("simple2b.txt")));
-    nGram2->merge(*(new NGram<string>("simple2c.txt")));
-    nGram2->merge(*(new NGram<string>("simple2d.txt")));
+    auto* nGram2 = new NGram<string>("../simple2a.txt");
+    nGram2->merge(*(new NGram<string>("../simple2b.txt")));
+    nGram2->merge(*(new NGram<string>("../simple2c.txt")));
+    nGram2->merge(*(new NGram<string>("../simple2d.txt")));
     REQUIRE(21 == nGram2->vocabularySize());
-    auto* nGram3 = new NGram<string>("simple3a.txt");
-    nGram3->merge(*(new NGram<string>("simple3b.txt")));
-    nGram3->merge(*(new NGram<string>("simple3c.txt")));
+    auto* nGram3 = new NGram<string>("../simple3a.txt");
+    nGram3->merge(*(new NGram<string>("../simple3b.txt")));
+    nGram3->merge(*(new NGram<string>("../simple3c.txt")));
     REQUIRE(20 == nGram3->vocabularySize());
 }

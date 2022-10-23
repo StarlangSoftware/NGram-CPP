@@ -16,7 +16,7 @@ private:
      * validation.
      */
     double delta;
-    double learnBestDelta(const vector<NGram<Symbol>*>& nGrams, const KFoldCrossValidation<vector<Symbol>>& kFoldCrossValidation, double lowerBound);
+    double learnBestDelta(const vector<NGram<Symbol>*>& nGrams, const KFoldCrossValidation<vector<Symbol>>& kFoldCrossValidation, double lowerBound) const;
     void learnParameters(const vector<vector<Symbol>>& corpus, int N);
 
 protected:
@@ -37,7 +37,7 @@ public:
 template<class Symbol>
 double AdditiveSmoothing<Symbol>::learnBestDelta(const vector<NGram<Symbol>*>& nGrams,
                                                  const KFoldCrossValidation<vector<Symbol>>& kFoldCrossValidation,
-                                                 double lowerBound) {
+                                                 double lowerBound) const{
     double bestPerplexity, bestPrevious = -1, upperBound = 1, perplexity, bestDelta = (lowerBound + upperBound) / 2;
     int numberOfParts = 5;
     while (true){
