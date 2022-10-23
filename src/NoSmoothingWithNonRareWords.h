@@ -20,10 +20,10 @@ protected:
 /**
  * Constructor of {@link NoSmoothingWithNonRareWords}
  *
- * @param probability
+ * @param _probability
  */
-template<class Symbol> NoSmoothingWithNonRareWords<Symbol>::NoSmoothingWithNonRareWords(double probability) {
-    this->probability = probability;
+template<class Symbol> NoSmoothingWithNonRareWords<Symbol>::NoSmoothingWithNonRareWords(double _probability) {
+    this->probability = _probability;
 }
 
 /**

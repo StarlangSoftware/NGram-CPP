@@ -69,7 +69,7 @@ TEST_CASE("LaplaceSmoothingTest-testCalculateNGramProbabilitiesSimple") {
 }
 
 TEST_CASE("LaplaceSmoothingTest-testCalculateNGramProbabilitiesComplex") {
-    vector<vector<string>> trainCorpus = readCorpus("../Test/train.txt");
+    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
     NGram<string> complexUniGram = NGram<string>(trainCorpus, 1);
     NGram<string> complexBiGram = NGram<string>(trainCorpus, 2);
     NGram<string> complexTriGram = NGram<string>(trainCorpus, 3);

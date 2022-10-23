@@ -12,7 +12,7 @@
 
 template <class Symbol> class GoodTuringSmoothing : public SimpleSmoothing<Symbol>{
 private:
-    double* linearRegressionOnCountsOfCounts(vector<int> countsOfCounts);
+    double* linearRegressionOnCountsOfCounts(const vector<int>& countsOfCounts);
 
 public:
     void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
@@ -27,8 +27,8 @@ public:
  *                       countsOfCounts[i] is the number of words occurred i times in the corpus.
  * @return Estimated counts of counts array. N[1] is the estimated count for out of vocabulary words.
  */
-template<class Symbol> double *GoodTuringSmoothing<Symbol>::linearRegressionOnCountsOfCounts(vector<int> countsOfCounts) {
-    double* N = new double[countsOfCounts.size()];
+template<class Symbol> double *GoodTuringSmoothing<Symbol>::linearRegressionOnCountsOfCounts(const vector<int>& countsOfCounts) {
+    auto* N = new double[countsOfCounts.size()];
     vector<int> r;
     vector<int> c;
     double xt, rt;

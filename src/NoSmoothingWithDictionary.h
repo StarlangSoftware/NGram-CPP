@@ -11,7 +11,7 @@ template <class Symbol> class NoSmoothingWithDictionary : public NoSmoothing<Sym
 private:
     unordered_set<Symbol> dictionary;
 public:
-    explicit NoSmoothingWithDictionary(unordered_set<Symbol> dictionary);
+    explicit NoSmoothingWithDictionary(const unordered_set<Symbol>& dictionary);
 protected:
     void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
@@ -20,7 +20,7 @@ protected:
  * No argument constructor of {@link NoSmoothingWithDictionary}
  * @param dictionary
  */
-template<class Symbol> NoSmoothingWithDictionary<Symbol>::NoSmoothingWithDictionary(unordered_set<Symbol> dictionary) {
+template<class Symbol> NoSmoothingWithDictionary<Symbol>::NoSmoothingWithDictionary(const unordered_set<Symbol>& dictionary) {
     this->dictionary = dictionary;
 }
 

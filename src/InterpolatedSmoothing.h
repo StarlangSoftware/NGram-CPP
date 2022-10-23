@@ -13,10 +13,10 @@
 template <class Symbol> class InterpolatedSmoothing : public TrainedSmoothing<Symbol>{
 private:
     double lambda1, lambda2;
-    double learnBestLambda(vector<NGram<Symbol>*> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation, double lowerBound);
-    vector<double> learnBestLambdas(vector<NGram<Symbol>*> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation, double lowerBound1, double lowerBound2);
+    double learnBestLambda(const vector<NGram<Symbol>*>& nGrams, const KFoldCrossValidation<vector<Symbol>>& kFoldCrossValidation, double lowerBound);
+    vector<double> learnBestLambdas(const vector<NGram<Symbol>*>& nGrams, const KFoldCrossValidation<vector<Symbol>>& kFoldCrossValidation, double lowerBound1, double lowerBound2);
 protected:
-    void learnParameters(vector<vector<Symbol>> corpus, int N);
+    void learnParameters(const vector<vector<Symbol>>& corpus, int N);
     void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
 
@@ -29,8 +29,9 @@ protected:
  * @param lowerBound Initial lower bound for optimizing the best lambda.
  * @return  Best lambda optimized with k-fold crossvalidation.
  */
-template<class Symbol> double InterpolatedSmoothing<Symbol>::learnBestLambda(vector<NGram<Symbol>*> nGrams, KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation,
-                                               double lowerBound) {
+template<class Symbol> double InterpolatedSmoothing<Symbol>::learnBestLambda(const vector<NGram<Symbol>*>& nGrams,
+                                                                             const KFoldCrossValidation<vector<Symbol>>& kFoldCrossValidation,
+                                                                             double lowerBound) {
     double bestPerplexity, bestPrevious = -1, upperBound = 0.999, perplexity, bestLambda = (lowerBound + upperBound) / 2;
     int numberOfParts = 5;
     vector<vector<Symbol>> testFolds[10];
@@ -73,9 +74,10 @@ template<class Symbol> double InterpolatedSmoothing<Symbol>::learnBestLambda(vec
  * @return
  */
 template<class Symbol>
-vector<double> InterpolatedSmoothing<Symbol>::learnBestLambdas(vector<NGram<Symbol>*> nGrams,
-                                                               KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation,
-                                                               double lowerBound1, double lowerBound2) {
+vector<double> InterpolatedSmoothing<Symbol>::learnBestLambdas(const vector<NGram<Symbol>*>& nGrams,
+                                                               const KFoldCrossValidation<vector<Symbol>>& kFoldCrossValidation,
+                                                               double lowerBound1,
+                                                               double lowerBound2) {
     double bestPerplexity, upperBound1 = 0.999, upperBound2 = 0.999, bestPrevious = -1, perplexity, bestLambda1 = (lowerBound1 + upperBound1) / 2, bestLambda2 = (lowerBound1 + upperBound1) / 2;
     vector<vector<Symbol>> testFolds[10];
     int numberOfParts = 5;
@@ -121,7 +123,7 @@ vector<double> InterpolatedSmoothing<Symbol>::learnBestLambdas(vector<NGram<Symb
  * @param corpus Train corpus used to optimize lambda parameters
  * @param N N in N-Gram.
  */
-template<class Symbol> void InterpolatedSmoothing<Symbol>::learnParameters(vector<vector<Symbol>> corpus, int N) {
+template<class Symbol> void InterpolatedSmoothing<Symbol>::learnParameters(const vector<vector<Symbol>>& corpus, int N) {
     if (N <= 1){
         return;
     }
@@ -129,7 +131,7 @@ template<class Symbol> void InterpolatedSmoothing<Symbol>::learnParameters(vecto
     vector<NGram<Symbol>*> nGrams;
     KFoldCrossValidation<vector<Symbol>> kFoldCrossValidation = KFoldCrossValidation(corpus, K, 0);
     for (int i = 0; i < K; i++){
-        NGram<Symbol>* nGram = new NGram<Symbol>(kFoldCrossValidation.getTrainFold(i), N);
+        auto* nGram = new NGram<Symbol>(kFoldCrossValidation.getTrainFold(i), N);
         nGrams.push_back(nGram);
         GoodTuringSmoothing<string> goodTuringSmoothing;
         for (int j = 2; j<= N; j++){

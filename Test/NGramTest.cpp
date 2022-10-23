@@ -34,7 +34,7 @@ TEST_CASE("NGramTest-testGetCountSimple") {
 }
 
 TEST_CASE("NGramTest-testGetCountComplex") {
-    vector<vector<string>> trainCorpus = readCorpus("../Test/train.txt");
+    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
     NGram<string> complexUniGram = NGram<string>(trainCorpus, 1);
     NGram<string> complexBiGram = NGram<string>(trainCorpus, 2);
     NGram<string> complexTriGram = NGram<string>(trainCorpus, 3);
@@ -58,13 +58,13 @@ TEST_CASE("NGramTest-testVocabularySizeSimple") {
 }
 
 TEST_CASE("NGramTest-testVocabularySizeComplex") {
-    vector<vector<string>> trainCorpus = readCorpus("../Test/train.txt");
+    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
     NGram<string>  complexUniGram = NGram<string>(trainCorpus, 1);
     REQUIRE(57625 == complexUniGram.vocabularySize());
-    vector<vector<string>> testCorpus = readCorpus("../Test/test.txt");
+    vector<vector<string>> testCorpus = readCorpus("../test.txt");
     NGram<string> complexUniGram2 = NGram<string>(testCorpus, 1);
     REQUIRE(55485 == complexUniGram2.vocabularySize());
-    vector<vector<string>> validationCorpus = readCorpus("../Test/validation.txt");
+    vector<vector<string>> validationCorpus = readCorpus("../validation.txt");
     NGram<string> complexUniGram3 = NGram<string>(validationCorpus, 1);
     REQUIRE(35663 == complexUniGram3.vocabularySize());
 }
