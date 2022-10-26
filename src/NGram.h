@@ -48,16 +48,10 @@ public:
     double getProbability(const initializer_list<Symbol>& symbols) const;
     int getCount(Symbol* symbols, int length) const;
     void setAdjustedProbability(double* countsOfCounts, int height, double pZero);
-    ~NGram();
     void prune(double threshold);
     void serialize(ostream& outputFile);
     void save(const string &fileName);
 };
-
-template<class Symbol> NGram<Symbol>::~NGram() {
-    delete rootNode;
-    delete probabilityOfUnseen;
-}
 
 /**
  * Constructor of {@link NGram} class which takes a {@link vector<vector<Symbol>>} corpus and {@link Integer} size of ngram as input.

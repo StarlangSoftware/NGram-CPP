@@ -23,7 +23,6 @@ private:
     void countWords(const CounterHashMap<Symbol>& wordCounter, int height) const;
     void replaceUnknownWords(const unordered_set<Symbol>& dictionary);
 public:
-    ~NGramNode();
     explicit NGramNode(const Symbol& symbol);
     NGramNode();
     NGramNode(bool isRootNode, istream &inputFile);
@@ -370,15 +369,6 @@ template<class Symbol> Symbol NGramNode<Symbol>::generateNextString(const vector
         }
     } else {
         return children.find(s.get(index)).second.generateNextString(s, index + 1);
-    }
-}
-
-template<class Symbol> NGramNode<Symbol>::~NGramNode() {
-    if (unknown != nullptr){
-        delete unknown;
-    }
-    for (auto& iterator : children){
-        delete iterator.second;
     }
 }
 
