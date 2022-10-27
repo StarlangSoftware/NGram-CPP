@@ -35,7 +35,7 @@ public:
     void merge(NGram<Symbol>& toBeMerged);
     void setN(int nGramSize);
     int getN() const;
-    void addNGram(Symbol* symbols, int size);
+    void addNGram(const vector<Symbol>& symbols, int size);
     void addNGramSentence(const vector<Symbol>& symbols, int sentenceCount = 1);
     double vocabularySize() const;
     void setLambda(double _lambda1);
@@ -110,7 +110,7 @@ template<class Symbol> void NGram<Symbol>::setN(int nGramSize) {
  * @param symbols {@link Symbol*} ngram added.
  * @param size size of symbols.
  */
-template<class Symbol> void NGram<Symbol>::addNGram(Symbol *symbols, int size) {
+template<class Symbol> void NGram<Symbol>::addNGram(const vector<Symbol>& symbols, int size) {
     for (int i = 0; i < size; i++){
         vocabulary.emplace(symbols[i]);
     }
