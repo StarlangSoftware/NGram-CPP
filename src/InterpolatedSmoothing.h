@@ -78,7 +78,7 @@ vector<double> InterpolatedSmoothing<Symbol>::learnBestLambdas(const vector<NGra
                                                                const KFoldCrossValidation<vector<Symbol>>& kFoldCrossValidation,
                                                                double lowerBound1,
                                                                double lowerBound2) {
-    double bestPerplexity, upperBound1 = 0.999, upperBound2 = 0.999, bestPrevious = -1, perplexity, bestLambda1 = (lowerBound1 + upperBound1) / 2, bestLambda2 = (lowerBound1 + upperBound1) / 2;
+    double bestPerplexity, upperBound1 = 0.999, upperBound2 = 0.999, bestPrevious = -1, perplexity, bestLambda1 = (lowerBound1 + upperBound1) / 2, bestLambda2 = (lowerBound2 + upperBound2) / 2;
     vector<vector<Symbol>> testFolds[10];
     int numberOfParts = 5;
     for (int i = 0; i < 10; i++){
