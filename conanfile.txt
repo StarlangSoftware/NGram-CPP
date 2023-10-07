@@ -1,7 +1,0 @@
-[requires]
-Math/1.0.0
-DataStructure/1.0.0
-Sampling/1.0.0
-
-[generators]
-cmake
