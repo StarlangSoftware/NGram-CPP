@@ -8,9 +8,9 @@
 
 TEST_CASE("InterpolatedSmoothingTest-testPerplexityComplex") {
     InterpolatedSmoothing<string> interpolatedSmoothing;
-    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
-    vector<vector<string>> validationCorpus = readCorpus("../validation.txt");
-    vector<vector<string>> testCorpus = readCorpus("../test.txt");
+    vector<vector<string>> trainCorpus = readCorpus("train.txt");
+    vector<vector<string>> validationCorpus = readCorpus("validation.txt");
+    vector<vector<string>> testCorpus = readCorpus("test.txt");
     NGram<string> complexBiGram = NGram<string>(trainCorpus, 2);
     interpolatedSmoothing.train(validationCorpus, complexBiGram);
     REQUIRE_THAT(917.214864, Catch::Matchers::WithinAbs(complexBiGram.getPerplexity(testCorpus), 0.0001));
@@ -21,8 +21,8 @@ TEST_CASE("InterpolatedSmoothingTest-testPerplexityComplex") {
 
 TEST_CASE("InterpolatedSmoothingTest-testCalculateNGramProbabilitiesComplex") {
     InterpolatedSmoothing<string> interpolatedSmoothing;
-    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
-    vector<vector<string>> validationCorpus = readCorpus("../validation.txt");
+    vector<vector<string>> trainCorpus = readCorpus("train.txt");
+    vector<vector<string>> validationCorpus = readCorpus("validation.txt");
     NGram<string> complexBiGram = NGram<string>(trainCorpus, 2);
     interpolatedSmoothing.train(validationCorpus, complexBiGram);
     REQUIRE_THAT(0.000418, Catch::Matchers::WithinAbs(complexBiGram.getProbability({"<s>", "mustafa"}), 0.0001));

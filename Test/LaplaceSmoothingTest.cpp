@@ -26,8 +26,8 @@ TEST_CASE("LaplaceSmoothingTest-testPerplexitySimple") {
 }
 
 TEST_CASE("LaplaceSmoothingTest-testPerplexityComplex") {
-    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
-    vector<vector<string>> testCorpus = readCorpus("../test.txt");
+    vector<vector<string>> trainCorpus = readCorpus("train.txt");
+    vector<vector<string>> testCorpus = readCorpus("test.txt");
     NGram<string> complexUniGram = NGram<string>(trainCorpus, 1);
     NGram<string> complexBiGram = NGram<string>(trainCorpus, 2);
     NGram<string> complexTriGram = NGram<string>(trainCorpus, 3);
@@ -69,7 +69,7 @@ TEST_CASE("LaplaceSmoothingTest-testCalculateNGramProbabilitiesSimple") {
 }
 
 TEST_CASE("LaplaceSmoothingTest-testCalculateNGramProbabilitiesComplex") {
-    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
+    vector<vector<string>> trainCorpus = readCorpus("train.txt");
     NGram<string> complexUniGram = NGram<string>(trainCorpus, 1);
     NGram<string> complexBiGram = NGram<string>(trainCorpus, 2);
     NGram<string> complexTriGram = NGram<string>(trainCorpus, 3);

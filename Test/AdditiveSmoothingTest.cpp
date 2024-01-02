@@ -8,9 +8,9 @@
 
 TEST_CASE("AdditiveSmoothingTest-testPerplexityComplex") {
     AdditiveSmoothing<string> additiveSmoothing;
-    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
-    vector<vector<string>> validationCorpus = readCorpus("../validation.txt");
-    vector<vector<string>> testCorpus = readCorpus("../test.txt");
+    vector<vector<string>> trainCorpus = readCorpus("train.txt");
+    vector<vector<string>> validationCorpus = readCorpus("validation.txt");
+    vector<vector<string>> testCorpus = readCorpus("test.txt");
     NGram<string> complexUniGram = NGram<string>(trainCorpus, 1);
     additiveSmoothing.train(validationCorpus, complexUniGram);
     REQUIRE_THAT(4043.947022, Catch::Matchers::WithinAbs(complexUniGram.getPerplexity(testCorpus), 0.0001));
@@ -24,8 +24,8 @@ TEST_CASE("AdditiveSmoothingTest-testPerplexityComplex") {
 
 TEST_CASE("AdditiveSmoothingTest-testCalculateNGramProbabilitiesComplex") {
     AdditiveSmoothing<string> additiveSmoothing;
-    vector<vector<string>> trainCorpus = readCorpus("../train.txt");
-    vector<vector<string>> validationCorpus = readCorpus("../validation.txt");
+    vector<vector<string>> trainCorpus = readCorpus("train.txt");
+    vector<vector<string>> validationCorpus = readCorpus("validation.txt");
     NGram<string> complexUniGram = NGram<string>(trainCorpus, 1);
     additiveSmoothing.train(validationCorpus, complexUniGram);
     double delta1 = additiveSmoothing.getDelta();
