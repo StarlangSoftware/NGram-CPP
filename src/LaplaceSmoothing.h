@@ -17,10 +17,17 @@ protected:
     void setProbabilitiesWithLevel(NGram<Symbol>& nGram, int level);
 };
 
+/**
+ * Constructor for Laplace smoothing. Sets the delta to 1.0
+ */
 template<class Symbol> LaplaceSmoothing<Symbol>::LaplaceSmoothing() {
     delta = 1.0;
 }
 
+/**
+ * Constructor for Laplace smoothing. Sets the delta.
+ * @param delta Delta value in Laplace smoothing.
+ */
 template<class Symbol> LaplaceSmoothing<Symbol>::LaplaceSmoothing(double delta) {
     this->delta = delta;
 }

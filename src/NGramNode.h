@@ -52,6 +52,9 @@ template<class Symbol> NGramNode<Symbol>::NGramNode(const Symbol& symbol) {
     count = 0;
 }
 
+/**
+ * Default constructor of NGramNode. Sets the count to 0.
+ */
 template<class Symbol> NGramNode<Symbol>::NGramNode() {
     count = 0;
 }
@@ -372,6 +375,12 @@ template<class Symbol> Symbol NGramNode<Symbol>::generateNextString(const vector
     }
 }
 
+/**
+ * Recursive method, which writes the info about an NGram node to a given output file.
+ * @param isRootNode True if the NGramNode is root, false otherwise.
+ * @param outputFile Output file
+ * @param level Height of the NGramNode.
+ */
 template<class Symbol> void NGramNode<Symbol>::serialize(bool isRootNode, ostream &outputFile, int level) {
     if (!isRootNode){
         for (int i = 0; i < level; i++){
@@ -388,6 +397,12 @@ template<class Symbol> void NGramNode<Symbol>::serialize(bool isRootNode, ostrea
     }
 }
 
+/**
+ * Constructor of {@link NGramNode}
+ *
+ * @param isRootNode True if this node is root node, false otherwise.
+ * @param br         File to be read.
+ */
 template<class Symbol> NGramNode<Symbol>::NGramNode(bool isRootNode, istream &inputFile){
     int numberOfChildren;
     if (!isRootNode){
@@ -404,6 +419,12 @@ template<class Symbol> NGramNode<Symbol>::NGramNode(bool isRootNode, istream &in
     }
 }
 
+/**
+ * Prunes the NGramNode according to the given threshold. Removes the child(ren) whose probability is less than the
+ * threshold.
+ * @param threshold Threshold for pruning the NGram tree.
+ * @param N N in N-Gram.
+ */
 template<class Symbol> void NGramNode<Symbol>::prune(double threshold, int N) {
     if (N == 0){
         Symbol maxElement = Symbol();
@@ -433,6 +454,10 @@ template<class Symbol> void NGramNode<Symbol>::prune(double threshold, int N) {
     }
 }
 
+/**
+ * Merges this NGramNode with the corresponding NGramNode in another NGram.
+ * @param toBeMerged Parallel NGramNode of the parallel NGram tree.
+ */
 template<class Symbol> void NGramNode<Symbol>::merge(NGramNode<Symbol>* toBeMerged) {
     for (auto const& it : children){
         if (toBeMerged->children.find(it.first) != toBeMerged->children.end()){

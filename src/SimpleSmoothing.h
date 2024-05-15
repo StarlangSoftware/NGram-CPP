@@ -14,6 +14,10 @@ public:
     void setProbabilities(NGram<Symbol>& nGram);
 };
 
+/**
+ * Calculates the N-Gram probabilities with simple smoothing.
+ * @param nGram N-Gram for which simple smoothing calculation is done.
+ */
 template<class Symbol> void SimpleSmoothing<Symbol>::setProbabilities(NGram<Symbol>& nGram) {
     setProbabilitiesWithLevel(nGram, nGram.getN());
 }
